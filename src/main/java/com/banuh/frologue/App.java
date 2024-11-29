@@ -15,7 +15,7 @@ public class App extends Application {
     stage.setTitle("개구리다");
 
     Group root = new Group();
-    Canvas canvas = new Canvas(800, 300);
+    Canvas canvas = new Canvas(800, 600);
     GraphicsContext gc = canvas.getGraphicsContext2D();
     root.getChildren().add(canvas);
 

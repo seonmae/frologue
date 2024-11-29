@@ -96,12 +96,6 @@ public abstract class Game {
 
     for (Entity entity: currentScene.entityList) {
       entity.pos.added(entity.getTotalVelocity().divide(fps));
-
-/*
-      for (Vector2D velocity: entity.velocity.values()) {
-        velocity.set(0, 0);
-      }
-*/
     }
   }
 
