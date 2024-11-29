@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 public class Entity {
-    public Vector2D pos;
+    public Vector2D pos = new Vector2D();
     public Game game;
 
     /** 초당 가능 속도(px) */
@@ -26,19 +26,23 @@ public class Entity {
     public boolean isFlip = false;
     public Hitbox hitbox;
 
-    public Entity(Sprite defaultSprite, double x, double y, Game game) {
+    public Entity(Sprite defaultSprite, double x, double y, Game game, Hitbox hitbox) {
         this.defaultSprite = defaultSprite.clone();
         activeSprite = defaultSprite;
 
-        pos = new Vector2D(x, y);
+        this.hitbox = hitbox;
 
-        hitbox = new Hitbox(0, 0, defaultSprite.width, defaultSprite.height);
+        setX(x);
+        setY(y);
+
         this.game = game;
         this.scene = game.getCurrentScene();
     }
 
     public void draw(GraphicsContext gc, double scale) {
         Sprite currentSprite = defaultSprite;
+
+        System.out.println(getX() + ", " + getY());
 
         // 변경됐을 경우에만 체크
         if (stateIsChanged) {

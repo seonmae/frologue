@@ -40,5 +40,6 @@ public class FrologueGame extends Game {
     public void start() {
         this.addScene(new TestScene(this, "test"));
         this.setCurrentScene("test");
+        this.showHitbox = true;
     }
 }

@@ -15,7 +15,7 @@ public class App extends Application {
     stage.setTitle("개구리다");
 
     Group root = new Group();
-    Canvas canvas = new Canvas(800, 600);
+    Canvas canvas = new Canvas(300 * 3, 200 * 3);
     GraphicsContext gc = canvas.getGraphicsContext2D();
     root.getChildren().add(canvas);
 
@@ -25,7 +25,7 @@ public class App extends Application {
 
     gc.setImageSmoothing(false);
 
-    FrologueGame game = new FrologueGame(canvas, 800, 600);
+    FrologueGame game = new FrologueGame(canvas, 300, 200);
 
     game.scale = 3;
     game.defaultURL = "file:src/main/resources/";

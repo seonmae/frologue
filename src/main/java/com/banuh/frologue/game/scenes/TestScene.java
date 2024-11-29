@@ -8,11 +8,11 @@ import com.banuh.frologue.game.entity.NormalFrog;
 import com.banuh.frologue.game.entity.UmbrellaFrog;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.paint.Color;
 
 public class TestScene extends GameScene {
-    public double GRAVITY = 9.8 * 2;
-    public double SPEED = 100;
-    public int FLAT = 300;
+    public double GRAVITY = 9.8;
+    public int FLAT = 100;
     public Frog frog;
 
     public TestScene(Game game, String name) {
@@ -21,7 +21,7 @@ public class TestScene extends GameScene {
 
     @Override
     public void start() {
-        frog = (Frog)game.addEntity(new UmbrellaFrog(0, 0, game));
+        frog = (Frog)game.addEntity(new UmbrellaFrog(150, 0, game));
 
         addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             KeyCode key = event.getCode();
@@ -58,7 +58,7 @@ public class TestScene extends GameScene {
                     frog.setState("turn", false);
                 }, game.FRAME() * 2);
             }
-            frog.setVelocityX("move", -SPEED);
+            frog.setVelocityX("move", -frog.SPEED);
             frog.setState("move", true);
         } else if (game.isPressed.rightKey) {
             if (!frog.isFlip) {
@@ -68,7 +68,7 @@ public class TestScene extends GameScene {
                     frog.setState("turn", false);
                 }, game.FRAME() * 2);
             }
-            frog.setVelocityX("move", SPEED);
+            frog.setVelocityX("move", frog.SPEED);
             frog.setState("move", true);
         } else {
             frog.setVelocityX("move", 0);
@@ -77,5 +77,10 @@ public class TestScene extends GameScene {
 
         frog.setState("jump", totalVelocityY < 0);
         frog.setState("fall", totalVelocityY > 0);
+    }
+
+    @Override
+    public void render() {
+
     }
 }

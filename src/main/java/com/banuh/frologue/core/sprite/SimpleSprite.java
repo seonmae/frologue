@@ -25,12 +25,12 @@ public class SimpleSprite extends Sprite {
     public void draw(GraphicsContext gc, double x, double y, double scale, boolean flip) {
         if (flip) {
             gc.save();
-            gc.translate(x + width * scale, y);
+            gc.translate((x + width) * scale, y * scale);
             gc.scale(-1, 1);
             gc.drawImage(img, 0, 0, width * scale, height * scale);
             gc.restore();
         } else {
-            gc.drawImage(img, x, y, width * scale, height * scale);
+            gc.drawImage(img, x * scale, y * scale, width * scale, height * scale);
         }
     }
 
