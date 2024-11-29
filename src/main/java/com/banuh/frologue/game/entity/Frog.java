@@ -3,11 +3,10 @@ package com.banuh.frologue.game.entity;
 import com.banuh.frologue.core.Game;
 import com.banuh.frologue.core.entity.Entity;
 import com.banuh.frologue.core.entity.Hitbox;
-import com.banuh.frologue.core.sprite.Sprite;
-import com.banuh.frologue.core.utils.Vector2D;
 
-public class Frog extends Entity {
+public abstract class Frog extends Entity {
     public String type;
+    public double JUMP_STRENGTH = 600;
 
     public Frog(String type, double x, double y, Game game) {
         super(game.getSprite("frog-"+type+"-idle"), x, y, game);
