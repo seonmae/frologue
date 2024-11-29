@@ -31,8 +31,8 @@ public abstract class Game {
   public GraphicsContext gc;
   private Canvas canvas;
   private Scene fxscene;
-  private int width;
-  private int height;
+  public final int width;
+  public final int height;
   public String defaultURL = "";
   public KeyBoardIsPressed isPressed = new KeyBoardIsPressed();
   public boolean showHitbox = false;
@@ -236,6 +236,10 @@ public abstract class Game {
 
   public double getRenderInterval() {
     return renderInterval;
+  }
+
+  public double getFps() {
+    return fps;
   }
 
   public long FRAME() {

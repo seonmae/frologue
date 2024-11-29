@@ -23,8 +23,12 @@ public class FrologueGame extends Game {
             addSprite("frog-"+type+"-land", "img/frog-"+type+"/land.png", 1, 2, 8);
             addSprite("frog-"+type+"-move", "img/frog-"+type+"/land.png", 1, 2, 8);
             addSprite("frog-"+type+"-turn", "img/frog-"+type+"/turn.png");
+            addSprite("frog-"+type+"-charging", "img/frog-"+type+"/land.png", 1, 2, 0);
         }
+
+        addSprite("frog-normal-charged", "img/frog-normal/charge.png", 1, 2, 8);
     }
+
 
     @Override
     public void update() {
@@ -40,6 +44,5 @@ public class FrologueGame extends Game {
     public void start() {
         this.addScene(new TestScene(this, "test"));
         this.setCurrentScene("test");
-        this.showHitbox = true;
     }
 }

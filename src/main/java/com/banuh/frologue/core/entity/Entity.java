@@ -95,6 +95,10 @@ public class Entity {
         }
     }
 
+    public void setState(String stateName) {
+        setState(stateName, true);
+    }
+
     public boolean getState(String stateName) {
         return stateList.get(stateName).is;
     }

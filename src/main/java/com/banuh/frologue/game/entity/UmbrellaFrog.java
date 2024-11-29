@@ -6,6 +6,6 @@ public class UmbrellaFrog extends Frog {
     public UmbrellaFrog(double x, double y, Game game) {
         super("umbrella", x, y, game);
 
-        JUMP_STRENGTH = 280;
+        JUMP_STRENGTH = 120;
     }
 }
