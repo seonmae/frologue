@@ -13,14 +13,17 @@ public class FrologueGame extends Game {
 
     @Override
     public void preload() {
-        addSprite("frog-normal-death", "img/normal-frog/frog-normal-death.png", 1, 4, 8);
-        addSprite("frog-normal-fall", "img/normal-frog/frog-normal-fall.png");
-        addSprite("frog-normal-hurt", "img/normal-frog/frog-normal-hurt.png", 1, 4, 8);
-        addSprite("frog-normal-idle", "img/normal-frog/frog-normal-idle.png", 2, 2, 8);
-        addSprite("frog-normal-jump", "img/normal-frog/frog-normal-jump.png");
-        addSprite("frog-normal-land", "img/normal-frog/frog-normal-land.png", 1, 2, 8);
-        addSprite("frog-normal-move", "img/normal-frog/frog-normal-land.png", 1, 2, 8);
-        addSprite("frog-normal-turn", "img/normal-frog/frog-normal-turn.png");
+        String[] types = {"normal", "ox", "space", "umbrella", "witch"};
+        for (String type: types) {
+            addSprite("frog-"+type+"-death", "img/frog-"+type+"/death.png", 1, 4, 8);
+            addSprite("frog-"+type+"-fall", "img/frog-"+type+"/fall.png");
+            addSprite("frog-"+type+"-hurt", "img/frog-"+type+"/hurt.png", 1, 4, 8);
+            addSprite("frog-"+type+"-idle", "img/frog-"+type+"/idle.png", 2, 2, 8);
+            addSprite("frog-"+type+"-jump", "img/frog-"+type+"/jump.png");
+            addSprite("frog-"+type+"-land", "img/frog-"+type+"/land.png", 1, 2, 8);
+            addSprite("frog-"+type+"-move", "img/frog-"+type+"/land.png", 1, 2, 8);
+            addSprite("frog-"+type+"-turn", "img/frog-"+type+"/turn.png");
+        }
     }
 
     @Override

@@ -4,15 +4,16 @@ import com.banuh.frologue.core.Game;
 import com.banuh.frologue.core.entity.Entity;
 import com.banuh.frologue.core.scene.GameScene;
 import com.banuh.frologue.game.entity.Frog;
+import com.banuh.frologue.game.entity.NormalFrog;
+import com.banuh.frologue.game.entity.UmbrellaFrog;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 public class TestScene extends GameScene {
     public double GRAVITY = 9.8 * 2;
-    public double JUMP_STRENGTH = 600;
     public double SPEED = 100;
     public int FLAT = 300;
-    public Entity frog;
+    public Frog frog;
 
     public TestScene(Game game, String name) {
         super(game, name);
@@ -20,13 +21,13 @@ public class TestScene extends GameScene {
 
     @Override
     public void start() {
-        frog = game.addEntity(new Frog("normal", 0, 0, game));
+        frog = (Frog)game.addEntity(new UmbrellaFrog(0, 0, game));
 
         addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             KeyCode key = event.getCode();
 
             if (key == KeyCode.SPACE) {
-                frog.setVelocityY("move", -JUMP_STRENGTH);
+                frog.setVelocityY("move", -frog.JUMP_STRENGTH);
             }
         });
     }
