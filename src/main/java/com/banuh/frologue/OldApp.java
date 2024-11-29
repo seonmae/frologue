@@ -59,7 +59,7 @@ public class OldApp extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        spriteSheet = new Image("file:src/main/resources/img/Frog/Idle.png");
+        spriteSheet = new Image("file:src/main/resources/img/Frog/idle.png");
         jumpImage = new Image("file:src/main/resources/img/Frog/Jump.png");
         fallImage = new Image("file:src/main/resources/img/Frog/Fall.png");
         movementImage = new Image("file:src/main/resources/img/Frog/Land.png");
