@@ -127,6 +127,11 @@ public class Vector2D {
         this.y = y;
     }
 
+    public void reset() {
+        this.x = 0;
+        this.y = 0;
+    }
+
     @Override
     public String toString() {
         return "(" + x + ", " + y + ")";
