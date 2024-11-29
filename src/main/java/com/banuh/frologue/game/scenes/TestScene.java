@@ -3,14 +3,15 @@ package com.banuh.frologue.game.scenes;
 import com.banuh.frologue.core.Game;
 import com.banuh.frologue.core.entity.Entity;
 import com.banuh.frologue.core.scene.GameScene;
+import com.banuh.frologue.game.entity.Frog;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 public class TestScene extends GameScene {
-    public double GRAVITY = 9.8;
-    public double JUMP_STRENGTH = 500;
+    public double GRAVITY = 9.8 * 2;
+    public double JUMP_STRENGTH = 600;
     public double SPEED = 100;
-    public int FLAT = 100;
+    public int FLAT = 300;
     public Entity frog;
 
     public TestScene(Game game, String name) {
@@ -19,15 +20,7 @@ public class TestScene extends GameScene {
 
     @Override
     public void start() {
-        frog = game.addEntity("frog_idle", 0, 0);
-        frog.addStates(new String[]{
-            "frog_move",
-            "frog_jump",
-            "frog_fall",
-            "frog_land",
-            "frog_hurt",
-            "frog_death",
-        }).addVelocity("move").addVelocity("gravity");
+        frog = game.addEntity(new Frog("normal", 0, 0, game));
 
         addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             KeyCode key = event.getCode();
@@ -40,16 +33,16 @@ public class TestScene extends GameScene {
 
     @Override
     public void update() {
-        if (frog.pos.getY() < FLAT) {
+        if (frog.getY() < FLAT) {
             frog.getVelocity("gravity").addedY(GRAVITY);
         } else {
-            if (frog.getState("frog_fall")) {
-                frog.setState("frog_land", true);
+            if (frog.getState("fall")) {
+                frog.setState("land", true);
                 game.setTimeout(() -> {
-                    frog.setState("frog_land", false);
+                    frog.setState("land", false);
                 }, game.FRAME() * 4);
             }
-            frog.pos.setY(FLAT);
+            frog.setY(FLAT);
             frog.setVelocityY("move", 0);
             frog.setVelocityY("gravity", 0);
         }
@@ -57,19 +50,31 @@ public class TestScene extends GameScene {
         double totalVelocityY = frog.getTotalVelocity().getY();
 
         if (game.isPressed.leftKey) {
-            frog.isFlip = false;
+            if (frog.isFlip) {
+                frog.setState("turn", true);
+                frog.isFlip = false;
+                game.setTimeout(() -> {
+                    frog.setState("turn", false);
+                }, game.FRAME() * 2);
+            }
             frog.setVelocityX("move", -SPEED);
-            frog.setState("frog_move", true);
+            frog.setState("move", true);
         } else if (game.isPressed.rightKey) {
-            frog.isFlip = true;
+            if (!frog.isFlip) {
+                frog.setState("turn", true);
+                frog.isFlip = true;
+                game.setTimeout(() -> {
+                    frog.setState("turn", false);
+                }, game.FRAME() * 2);
+            }
             frog.setVelocityX("move", SPEED);
-            frog.setState("frog_move", true);
+            frog.setState("move", true);
         } else {
             frog.setVelocityX("move", 0);
-            frog.setState("frog_move", false);
+            frog.setState("move", false);
         }
 
-        frog.setState("frog_jump", totalVelocityY < 0);
-        frog.setState("frog_fall", totalVelocityY > 0);
+        frog.setState("jump", totalVelocityY < 0);
+        frog.setState("fall", totalVelocityY > 0);
     }
 }

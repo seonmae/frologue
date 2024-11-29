@@ -13,14 +13,14 @@ public class FrologueGame extends Game {
 
     @Override
     public void preload() {
-        addSprite("frog_death", "img/Frog/Death.png", 1, 4, 8);
-        addSprite("frog_fall", "img/Frog/Fall.png");
-        addSprite("frog_hurt", "img/Frog/Hurt.png", 1, 4, 8);
-        addSprite("frog_idle", "img/Frog/Idle.png", 2, 2, 8);
-        addSprite("frog_jump", "img/Frog/Jump.png");
-        addSprite("frog_land", "img/Frog/Land.png", 1, 2, 8);
-        addSprite("frog_move", "img/Frog/Land.png", 1, 2, 8);
-        addSprite("frog_turn", "img/Frog/Turn.png");
+        addSprite("frog-normal-death", "img/normal-frog/frog-normal-death.png", 1, 4, 8);
+        addSprite("frog-normal-fall", "img/normal-frog/frog-normal-fall.png");
+        addSprite("frog-normal-hurt", "img/normal-frog/frog-normal-hurt.png", 1, 4, 8);
+        addSprite("frog-normal-idle", "img/normal-frog/frog-normal-idle.png", 2, 2, 8);
+        addSprite("frog-normal-jump", "img/normal-frog/frog-normal-jump.png");
+        addSprite("frog-normal-land", "img/normal-frog/frog-normal-land.png", 1, 2, 8);
+        addSprite("frog-normal-move", "img/normal-frog/frog-normal-land.png", 1, 2, 8);
+        addSprite("frog-normal-turn", "img/normal-frog/frog-normal-turn.png");
     }
 
     @Override

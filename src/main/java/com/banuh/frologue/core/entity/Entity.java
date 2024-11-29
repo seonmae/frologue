@@ -1,6 +1,7 @@
 package com.banuh.frologue.core.entity;
 
 import com.banuh.frologue.core.Game;
+import com.banuh.frologue.core.scene.GameScene;
 import com.banuh.frologue.core.sprite.AnimationSprite;
 import com.banuh.frologue.core.sprite.Sprite;
 import com.banuh.frologue.core.utils.Vector2D;
@@ -15,15 +16,15 @@ public class Entity {
 
     /** 초당 가능 속도(px) */
     private HashMap<String, Vector2D> velocity = new HashMap<>();
-    private double width;
-    private double height;
 
     private Sprite defaultSprite;
     private Sprite activeSprite;
+    private GameScene scene;
     private boolean stateIsChanged = true;
     final private LinkedHashMap<String, StatePair> stateList = new LinkedHashMap<>();
 
     public boolean isFlip = false;
+    public Hitbox hitbox;
 
     public Entity(Sprite defaultSprite, double x, double y, Game game) {
         this.defaultSprite = defaultSprite.clone();
@@ -31,9 +32,9 @@ public class Entity {
 
         pos = new Vector2D(x, y);
 
-        width = defaultSprite.width;
-        height = defaultSprite.height;
+        hitbox = new Hitbox(0, 0, defaultSprite.width, defaultSprite.height);
         this.game = game;
+        this.scene = game.getCurrentScene();
     }
 
     public void draw(GraphicsContext gc, double scale) {
@@ -104,12 +105,30 @@ public class Entity {
         return currentState;
     }
 
+    /** 실질적인 히트박스 위치 */
+    public double getX() {
+        return this.pos.getX() + this.hitbox.getPos().getX();
+    }
+
+    /** 실질적인 히트박스 위치 */
+    public double getY() {
+        return this.pos.getY() + this.hitbox.getPos().getY();
+    }
+
+    public void setX(double x) {
+        this.pos.setX(x - hitbox.getPos().getX());
+    }
+
+    public void setY(double y) {
+        this.pos.setY(y - hitbox.getPos().getY());
+    }
+
     public double getWidth() {
-        return width;
+        return this.hitbox.getWidth();
     }
 
     public double getHeight() {
-        return height;
+        return this.hitbox.getHeight();
     }
 
     public Vector2D getVelocity(String name) {
@@ -144,6 +163,10 @@ public class Entity {
             total.added(v);
         }
         return total;
+    }
+
+    public GameScene getScene() {
+        return scene;
     }
 
     static class StatePair {
