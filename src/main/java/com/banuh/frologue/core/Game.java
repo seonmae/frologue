@@ -1,6 +1,7 @@
 package com.banuh.frologue.core;
 
 import com.banuh.frologue.core.entity.Entity;
+import com.banuh.frologue.core.entity.Hitbox;
 import com.banuh.frologue.core.input.InputEvent;
 import com.banuh.frologue.core.scene.GameScene;
 import com.banuh.frologue.core.sprite.AnimationSprite;
@@ -15,6 +16,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,13 +28,14 @@ public abstract class Game {
   private double renderInterval = 1_000_000_000.0 / 60;
   private double fps = 60;
   public double scale = 3;
-  private GraphicsContext gc;
+  public GraphicsContext gc;
   private Canvas canvas;
   private Scene fxscene;
   private int width;
   private int height;
   public String defaultURL = "";
   public KeyBoardIsPressed isPressed = new KeyBoardIsPressed();
+  public boolean showHitbox = false;
 
   private HashMap<String, GameScene> sceneList = new HashMap<>();
   private GameScene currentScene;
@@ -102,10 +105,15 @@ public abstract class Game {
   public abstract void render();
 
   private void defaultRender() {
-    gc.clearRect(0, 0, width, height);
+    gc.clearRect(0, 0, width * scale, height * scale);
 
     for (Entity entity: currentScene.entityList) {
       entity.draw(gc, scale);
+      if (showHitbox) {
+        gc.setStroke(Color.RED);
+        gc.setLineWidth(1);
+        gc.strokeRect(entity.getX() * scale, entity.getY() * scale, entity.getWidth() * scale, entity.getHeight() * scale);
+      }
     }
   }
 
@@ -147,10 +155,10 @@ public abstract class Game {
     return spriteMap.get(name);
   }
 
-  public Entity addEntity(String spriteName, double x, double y) {
+  public Entity addEntity(String spriteName, double x, double y, Hitbox hitbox) {
     if (spriteMap.containsKey(spriteName)) {
       Sprite sprite = spriteMap.get(spriteName);
-      Entity entity = new Entity(sprite, x, y, this);
+      Entity entity = new Entity(sprite, x, y, this, hitbox);
       currentScene.entityList.add(entity);
 
       return entity;
@@ -158,6 +166,11 @@ public abstract class Game {
       System.out.println("찾을 수 없는 스프라이트 이름입니다: " + spriteName);
       return null;
     }
+  }
+
+  public Entity addEntity(String spriteName, double x, double y) {
+    Sprite sprite = spriteMap.get(spriteName);
+    return addEntity(spriteName, x, y, new Hitbox(0, 0, sprite.width, sprite.height));
   }
 
   public Entity addEntity(Entity entity) {

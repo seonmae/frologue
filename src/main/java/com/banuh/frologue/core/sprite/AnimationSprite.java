@@ -62,7 +62,7 @@ public class AnimationSprite extends Sprite {
 
         if (flip) {
             gc.save();
-            gc.translate(x + width * scale, y);
+            gc.translate((x + width) * scale, y * scale);
             gc.scale(-1, 1);
             gc.drawImage(
                 img, sx, sy, width, height,
@@ -73,7 +73,7 @@ public class AnimationSprite extends Sprite {
         } else {
             gc.drawImage(
                 img, sx, sy, width, height,
-                x, y,
+                x * scale, y * scale,
                 width * scale, height * scale
             );
         }
