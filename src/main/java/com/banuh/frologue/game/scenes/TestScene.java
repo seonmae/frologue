@@ -46,7 +46,7 @@ public class TestScene extends GameScene {
                 if (overLap.isLeft) {
                     frog.pos.setX(overLap.leftTilePos.getX() + TILE_SIZE);
                 } else if (overLap.isRight) {
-                    frog.pos.setX(overLap.leftTilePos.getX() - frog.getWidth());
+                    frog.pos.setX(overLap.rightTilePos.getX() - frog.getWidth());
                 }
             }
         }
@@ -132,22 +132,22 @@ public class TestScene extends GameScene {
 
     @Override
     public void render() {
-        if (overLap.isTop) {
-            game.gc.setFill(new Color(1f, 0f, 0f, 0.5f));
-            game.gc.fillRect(overLap.topTilePos.getX() * game.camera.scale, overLap.topTilePos.getY() * game.camera.scale, 48, 48);
-        }
-        if (overLap.isRight) {
-            game.gc.setFill(new Color(0f, 1f, 0f, 0.5f));
-            game.gc.fillRect(overLap.rightTilePos.getX() * game.camera.scale, overLap.rightTilePos.getY() * game.camera.scale, 48, 48);
-        }
-        if (overLap.isBottom) {
-            game.gc.setFill(new Color(0f, 0f, 1f, 0.5f));
-            game.gc.fillRect(overLap.bottomTilePos.getX() * game.camera.scale, overLap.bottomTilePos.getY() * game.camera.scale, 48, 48);
-        }
-        if (overLap.isLeft) {
-            game.gc.setFill(new Color(0f, 0f, 0f, 0.5f));
-            game.gc.fillRect(overLap.leftTilePos.getX() * game.camera.scale, overLap.leftTilePos.getY() * game.camera.scale, 48, 48);
-        }
+//        if (overLap.isTop) {
+//            game.gc.setFill(new Color(1f, 0f, 0f, 0.5f));
+//            game.gc.fillRect(overLap.topTilePos.getX() * game.camera.scale, overLap.topTilePos.getY() * game.camera.scale, 48, 48);
+//        }
+//        if (overLap.isRight) {
+//            game.gc.setFill(new Color(0f, 1f, 0f, 0.5f));
+//            game.gc.fillRect(overLap.rightTilePos.getX() * game.camera.scale, overLap.rightTilePos.getY() * game.camera.scale, 48, 48);
+//        }
+//        if (overLap.isBottom) {
+//            game.gc.setFill(new Color(0f, 0f, 1f, 0.5f));
+//            game.gc.fillRect(overLap.bottomTilePos.getX() * game.camera.scale, overLap.bottomTilePos.getY() * game.camera.scale, 48, 48);
+//        }
+//        if (overLap.isLeft) {
+//            game.gc.setFill(new Color(0f, 0f, 0f, 0.5f));
+//            game.gc.fillRect(overLap.leftTilePos.getX() * game.camera.scale, overLap.leftTilePos.getY() * game.camera.scale, 48, 48);
+//        }
 
 //        if (tilepos != null) {
 //            // show hitboxes
@@ -170,9 +170,10 @@ public class TestScene extends GameScene {
 
     @Override
     public void start() {
-        game.showHitbox = true;
+//        game.showHitbox = true;
+        game.backgroundColor = Color.web("#6bc6ff");
 
-        frog = (Frog)game.addEntity(new WitchFrog(180, 0, game));
+        frog = (Frog)game.addEntity(new OxFrog(180, 0, game));
         TileMap tileMap = game.tileMapList.get("test");
         game.placeTileMapByBottom("test", - (tileMap.getWidth() - game.width) / 2f, 200 + 32);
 

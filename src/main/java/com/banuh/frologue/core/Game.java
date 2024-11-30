@@ -39,6 +39,7 @@ public abstract class Game {
   public final int height;
   public KeyBoardIsPressed isPressed = new KeyBoardIsPressed();
   public boolean showHitbox = false;
+  public Color backgroundColor = Color.WHITE;
 
   private HashMap<String, GameScene> sceneList = new HashMap<>();
   public HashMap<String, TileMap> tileMapList = new HashMap<>();
@@ -115,7 +116,9 @@ public abstract class Game {
   public abstract void render();
 
   private void defaultRender() {
-    gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+    gc.setFill(backgroundColor);
+    gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+//    gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
     for (Entity entity: currentScene.entityList) {
       entity.draw(gc, camera);
