@@ -1,5 +1,6 @@
 package com.banuh.frologue.core;
 
+import com.banuh.frologue.core.camera.GameCamera;
 import com.banuh.frologue.core.entity.Entity;
 import com.banuh.frologue.core.entity.Hitbox;
 import com.banuh.frologue.core.input.InputEvent;
@@ -7,6 +8,8 @@ import com.banuh.frologue.core.scene.GameScene;
 import com.banuh.frologue.core.sprite.AnimationSprite;
 import com.banuh.frologue.core.sprite.SimpleSprite;
 import com.banuh.frologue.core.sprite.Sprite;
+import com.banuh.frologue.core.tilemap.PlacedTileMap;
+import com.banuh.frologue.core.tilemap.TileMap;
 import com.banuh.frologue.core.utils.Schedule;
 import javafx.animation.AnimationTimer;
 import javafx.event.Event;
@@ -18,6 +21,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -27,17 +31,17 @@ public abstract class Game {
   private double updateInterval = 1_000_000_000.0 / 60 / 2;
   private double renderInterval = 1_000_000_000.0 / 60;
   private double fps = 60;
-  public double scale = 3;
+  public GameCamera camera;
   public GraphicsContext gc;
   private Canvas canvas;
   private Scene fxscene;
   public final int width;
   public final int height;
-  public String defaultURL = "";
   public KeyBoardIsPressed isPressed = new KeyBoardIsPressed();
   public boolean showHitbox = false;
 
   private HashMap<String, GameScene> sceneList = new HashMap<>();
+  public HashMap<String, TileMap> tileMapList = new HashMap<>();
   private GameScene currentScene;
   public ArrayList<InputEvent> eventList = new ArrayList<>();
 
@@ -51,6 +55,8 @@ public abstract class Game {
     this.width = width;
     this.height = height;
 
+    this.camera = new GameCamera(0, 0, 1);
+
     addScene(firstScene);
     setCurrentScene(firstScene.name);
 
@@ -63,6 +69,8 @@ public abstract class Game {
     this.width = width;
     this.height = height;
 
+    this.camera = new GameCamera(0, 0, 1);
+
     addScene(firstSceneName);
     setCurrentScene(firstSceneName);
 
@@ -74,6 +82,8 @@ public abstract class Game {
     this.gc = canvas.getGraphicsContext2D();
     this.width = width;
     this.height = height;
+
+    this.camera = new GameCamera(0, 0, 1);
 
     addScene("start");
     setCurrentScene("start");
@@ -105,15 +115,19 @@ public abstract class Game {
   public abstract void render();
 
   private void defaultRender() {
-    gc.clearRect(0, 0, width * scale, height * scale);
+    gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
     for (Entity entity: currentScene.entityList) {
-      entity.draw(gc, scale);
+      entity.draw(gc, camera);
       if (showHitbox) {
         gc.setStroke(Color.RED);
         gc.setLineWidth(1);
-        gc.strokeRect(entity.getX() * scale, entity.getY() * scale, entity.getWidth() * scale, entity.getHeight() * scale);
+        gc.strokeRect(entity.pos.getX() * camera.scale, entity.pos.getY() * camera.scale, entity.getWidth() * camera.scale, entity.getHeight() * camera.scale);
       }
+    }
+
+    for (PlacedTileMap tileMap: currentScene.placedTilemapList) {
+      tileMap.draw();
     }
   }
 
@@ -126,7 +140,6 @@ public abstract class Game {
   public abstract void start();
 
   public Sprite addSprite(String name, String src) {
-    src = defaultURL + src;
     Sprite sprite = new SimpleSprite(src, name);
 
     spriteMap.put(name, sprite);
@@ -136,7 +149,6 @@ public abstract class Game {
   public Sprite addSprite(String name, String src, int row, int col, int fps) {
     int frameLength = row * col;
 
-    src = defaultURL + src;
     Sprite sprite = new AnimationSprite(src, row, col, frameLength, 1000.0 / fps, name);
 
     spriteMap.put(name, sprite);
@@ -144,7 +156,7 @@ public abstract class Game {
   }
 
   public Sprite addSprite(String name, String src, int row, int col, int frameLength, int fps) {
-    src = defaultURL + src;
+    src = src;
     Sprite sprite = new AnimationSprite(src, row, col, frameLength, 1000.0 / fps, name);
 
     spriteMap.put(name, sprite);
@@ -179,6 +191,21 @@ public abstract class Game {
     return entity;
   }
 
+  public PlacedTileMap placeTileMap(String name, double x, double y) {
+    PlacedTileMap tilemap = new PlacedTileMap(name, tileMapList.get(name), x, y, this);
+    currentScene.placedTilemapList.add(tilemap);
+
+    return tilemap;
+  }
+
+  public PlacedTileMap placeTileMapByBottom(String name, double x, double y) {
+    TileMap tileMap = tileMapList.get(name);
+    PlacedTileMap tilemap = new PlacedTileMap(name, tileMap, x, y - tileMap.getHeight(), this);
+    currentScene.placedTilemapList.add(tilemap);
+
+    return tilemap;
+  }
+
   public void addScene(GameScene newScene) {
     this.sceneList.put(newScene.name, newScene);
   }
@@ -193,6 +220,18 @@ public abstract class Game {
 
   public void addScene(String newSceneName, Runnable startCallback, Runnable endCallback) {
     this.sceneList.put(newSceneName, new GameScene(this, newSceneName, startCallback, endCallback));
+  }
+
+  public TileMap addTileMap(String name, String path) {
+    try {
+      TileMap tileMap = new TileMap(name, path, this);
+      tileMapList.put(name, tileMap);
+      return tileMap;
+    } catch (IOException e) {
+      // 적절한 예외 처리 (로그 출력, 사용자 알림 등)
+      e.printStackTrace();
+      return null; // 또는 적절한 기본값 반환
+    }
   }
 
   public void setCurrentScene(String name) {

@@ -1,6 +1,7 @@
 package com.banuh.frologue.core.entity;
 
 import com.banuh.frologue.core.Game;
+import com.banuh.frologue.core.camera.GameCamera;
 import com.banuh.frologue.core.scene.GameScene;
 import com.banuh.frologue.core.sprite.AnimationSprite;
 import com.banuh.frologue.core.sprite.Sprite;
@@ -32,17 +33,15 @@ public class Entity {
 
         this.hitbox = hitbox;
 
-        setX(x);
-        setY(y);
+        pos.setX(x);
+        pos.setY(y);
 
         this.game = game;
         this.scene = game.getCurrentScene();
     }
 
-    public void draw(GraphicsContext gc, double scale) {
+    public void draw(GraphicsContext gc, GameCamera camera) {
         Sprite currentSprite = defaultSprite;
-
-        System.out.println(getX() + ", " + getY());
 
         // 변경됐을 경우에만 체크
         if (stateIsChanged) {
@@ -62,7 +61,9 @@ public class Entity {
             currentSprite = activeSprite;
         }
 
-        currentSprite.draw(gc, pos.getX(), pos.getY(), scale, isFlip);
+        Vector2D drawPos = new Vector2D(pos.getX(), pos.getY());
+        drawPos.subtracted(game.camera.pos);
+        currentSprite.draw(gc, pos.getX(), pos.getY(), camera, this, isFlip);
     }
 
     public Entity addState(String stateName, Sprite sprite) {
@@ -113,24 +114,6 @@ public class Entity {
         return currentState;
     }
 
-    /** 실질적인 히트박스 위치 */
-    public double getX() {
-        return this.pos.getX() + this.hitbox.getPos().getX();
-    }
-
-    /** 실질적인 히트박스 위치 */
-    public double getY() {
-        return this.pos.getY() + this.hitbox.getPos().getY();
-    }
-
-    public void setX(double x) {
-        this.pos.setX(x - hitbox.getPos().getX());
-    }
-
-    public void setY(double y) {
-        this.pos.setY(y - hitbox.getPos().getY());
-    }
-
     public double getWidth() {
         return this.hitbox.getWidth();
     }
@@ -171,6 +154,10 @@ public class Entity {
             total.added(v);
         }
         return total;
+    }
+
+    public Vector2D getNextPos() {
+        return pos.add(getTotalVelocity().divide(game.getFps()));
     }
 
     public GameScene getScene() {

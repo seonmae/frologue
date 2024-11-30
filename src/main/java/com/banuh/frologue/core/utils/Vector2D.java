@@ -1,6 +1,10 @@
 package com.banuh.frologue.core.utils;
 
 public class Vector2D {
+    public enum Direction {
+        LEFT, TOP, RIGHT, BOTTOM;
+    }
+
     private double x;
     private double y;
 
@@ -132,8 +136,36 @@ public class Vector2D {
         this.y = 0;
     }
 
+    public void flipX() {
+        this.x = -x;
+    }
+
+    public void flipY() {
+        this.y = -y;
+    }
+
     @Override
     public String toString() {
         return "(" + x + ", " + y + ")";
+    }
+
+    public static Direction getOverlapDirection(Vector2D overlap) {
+        if (overlap == null) return null;
+
+        // 세로가 더 길다 = 옆으로 충돌했다
+        if (Math.abs(overlap.getX()) >= Math.abs(overlap.getY())) {
+            // x가 양수다 = 왼쪽으로 충돌했다
+            return overlap.getX() > 0 ? Direction.LEFT : Direction.RIGHT;
+        } else {
+            // x가 양수다 = 아래쪽으로 충돌했다
+            return overlap.getY() > 0 ? Direction.TOP : Direction.BOTTOM;
+        }
+    }
+
+    public static boolean isCollision(
+        double ax1, double ay1, double ax2, double ay2,
+        double bx1, double by1, double bx2, double by2
+    ) {
+        return ax1 < bx2 && ax2 > bx1 && ay1 < by2 && ay2 > by1;
     }
 }
