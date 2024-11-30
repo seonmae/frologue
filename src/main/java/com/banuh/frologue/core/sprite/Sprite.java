@@ -1,7 +1,11 @@
 package com.banuh.frologue.core.sprite;
 
+import com.banuh.frologue.core.camera.GameCamera;
+import com.banuh.frologue.core.entity.Entity;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+
+import java.util.Objects;
 
 public abstract class Sprite {
     public Image img;
@@ -10,7 +14,8 @@ public abstract class Sprite {
     public int height;
 
     public Sprite(String src, String name) {
-        this.img = new Image(src);
+        String path = "file:src/main/resources/" + src;
+        this.img = new Image(path);
         this.name = name;
     }
 
@@ -19,8 +24,7 @@ public abstract class Sprite {
         this.name = name;
     }
 
-    public abstract void draw(GraphicsContext gc, double x, double y, double scale);
-    public abstract void draw(GraphicsContext gc, double x, double y, double scale, boolean flip);
+    public abstract void draw(GraphicsContext gc, double x, double y, GameCamera camera, Entity entity, boolean flip);
 
     public abstract Sprite clone();
 }

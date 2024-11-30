@@ -9,10 +9,12 @@ public abstract class Frog extends Entity {
     public double JUMP_STRENGTH = 100;
     public double jump_scale = 1;
     public double SPEED = 30;
+    private boolean onGround = false;
+    private boolean inSky = false;
 
     public Frog(String type, double x, double y, Game game) {
         super(game.getSprite("frog-"+type+"-idle"),
-            x, y, game, new Hitbox(23, 28, 19, 12)
+            x, y, game, new Hitbox(22, 28, 20, 12)
         );
 
         this.type = type;
@@ -26,11 +28,27 @@ public abstract class Frog extends Entity {
         addState("turn", "frog-"+type+"-turn");
         addState("death", "frog-"+type+"-death");
         addState("charging", "frog-"+type+"-charging");
-        addState("charged", "frog-normal-charged");
+        addState("charged", "frog-"+type+"-charged");
 
         addVelocity("move");
         addVelocity("wall");
         addVelocity("move_with_jump");
         addVelocity("gravity");
+    }
+
+    public boolean isOnGround() {
+        return onGround;
+    }
+
+    public boolean isInSky() {
+        return inSky;
+    }
+
+    public void setOnGround(boolean onGround) {
+        this.onGround = onGround;
+    }
+
+    public void setInSky(boolean inSky) {
+        this.inSky = inSky;
     }
 }

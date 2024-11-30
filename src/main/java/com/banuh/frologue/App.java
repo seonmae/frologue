@@ -1,7 +1,8 @@
 package com.banuh.frologue;
 
+import com.banuh.frologue.core.tilemap.TileMapData;
+import com.banuh.frologue.core.tilemap.TileMapLoader;
 import com.banuh.frologue.game.FrologueGame;
-import com.banuh.frologue.game.scenes.TestScene;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -9,9 +10,11 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
 public class App extends Application {
   @Override
-  public void start(Stage stage) {
+  public void start(Stage stage) throws IOException {
     stage.setTitle("개구리다");
 
     Group root = new Group();
@@ -27,8 +30,6 @@ public class App extends Application {
 
     FrologueGame game = new FrologueGame(canvas, 300, 200);
 
-    game.scale = 3;
-    game.defaultURL = "file:src/main/resources/";
     game.run();
   }
 
