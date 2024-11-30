@@ -2,6 +2,7 @@ package com.banuh.frologue.core.tilemap;
 
 import com.banuh.frologue.core.Game;
 import com.banuh.frologue.core.entity.Entity;
+import com.banuh.frologue.core.utils.Direction;
 import com.banuh.frologue.core.utils.Vector2D;
 
 public class PlacedTileMap {
@@ -49,34 +50,50 @@ public class PlacedTileMap {
             int areaX2 = (int)(entityX + width) / tileSize + 1;
             int areaY2 = (int)(entityY + height) / tileSize + 1;
 
+            OverLap overLap = new OverLap(false);
+
             for (int i = areaY1; i < areaY2; i++) {
                 for (int j = areaX1; j < areaX2; j++) {
                     if (i >= 0 && j >= 0 && layer.tiles[i][j] != null) {
-                        System.out.println("collision");
-
-                        Vector2D tilePos = new Vector2D(j * tileSize, i * tileSize);
+                        Vector2D tilePos = new Vector2D(j * tileSize, i * tileSize).added(pos);
 
                         double overlapX1 = Math.max(target.getX(), tilePos.getX());
                         double overlapY1 = Math.max(target.getY(), tilePos.getY());
-                        double overlapX2 = Math.max(target.getX() + width, tilePos.getX() + tileSize);
-                        double overlapY2 = Math.max(target.getY() + height, tilePos.getY() + tileSize);
+                        double overlapX2 = Math.min(target.getX() + width, tilePos.getX() + tileSize);
+                        double overlapY2 = Math.min(target.getY() + height, tilePos.getY() + tileSize);
 
                         double overlapWidth = overlapX2 - overlapX1;
                         double overlapHeight = overlapY2 - overlapY1;
 
-                        String direction;
-
                         if (overlapWidth < overlapHeight) {
-                            direction = target.getX() < tilePos.getX() ? "right" : "left";
+                            if (target.getX() < tilePos.getX()) {
+                                overLap.isRight = true;
+//                                overLap.rightTilePos = tilePos.add(0, tileSize * 0.5);
+                                overLap.rightTilePos = tilePos;
+                            } else {
+                                overLap.isLeft = true;
+//                                overLap.leftTilePos = tilePos.add(tileSize, tileSize * 0.5);
+                                overLap.leftTilePos = tilePos;
+                            }
                         } else {
-                            direction = target.getY() < tilePos.getY() ? "bottom" : "top";
+                            if (target.getY() < tilePos.getY()) {
+                                overLap.isBottom = true;
+//                                overLap.bottomTilePos = tilePos.add(tileSize * 0.5, 0);
+                                overLap.bottomTilePos = tilePos;
+                            } else {
+                                overLap.isTop = true;
+//                                overLap.topTilePos = tilePos.add(tileSize * 0.5, tileSize);
+                                overLap.topTilePos = tilePos;
+                            }
                         }
 
-                        System.out.println("pos: " + direction);
-                        return new OverLap(true, tilePos.add(pos), overlapWidth, overlapHeight, direction);
+                        overLap.is = true;
                     }
                 }
             }
+
+            // 부딪힌 방향을 종합하여 리턴
+            return overLap;
         }
 
         return new OverLap(false);

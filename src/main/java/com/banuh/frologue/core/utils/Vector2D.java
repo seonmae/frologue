@@ -80,45 +80,53 @@ public class Vector2D {
         return Math.sqrt(Math.pow(this.x - other.x, 2) + Math.pow(this.y - other.y, 2));
     }
 
-    public void added(Vector2D other) {
+    public Vector2D added(Vector2D other) {
         this.x += other.x;
         this.y += other.y;
+        return this;
     }
 
-    public void subtracted(Vector2D other) {
+    public Vector2D subtracted(Vector2D other) {
         this.x -= other.x;
         this.y -= other.y;
+        return this;
     }
 
-    public void added(double dx, double dy) {
+    public Vector2D added(double dx, double dy) {
         this.x += dx;
         this.y += dy;
+        return this;
     }
 
-    public void addedX(double dx) {
+    public Vector2D addedX(double dx) {
         this.x += dx;
+        return this;
     }
 
-    public void addedY(double dy) {
+    public Vector2D addedY(double dy) {
         this.y += dy;
+        return this;
     }
 
-    public void multiplied(double scalar) {
+    public Vector2D multiplied(double scalar) {
         this.x *= scalar;
         this.y *= scalar;
+        return this;
     }
 
-    public void divided(double scalar) {
+    public Vector2D divided(double scalar) {
         if (scalar == 0) throw new ArithmeticException("Division by zero");
         this.x /= scalar;
         this.y /= scalar;
+        return this;
     }
 
-    public void normalized() {
+    public Vector2D normalized() {
         double mag = Math.sqrt(x * x + y * y);
-        if (mag == 0) return;
+        if (mag == 0) return null;
         this.x /= mag;
         this.y /= mag;
+        return this;
     }
 
     public void set(Vector2D other) {

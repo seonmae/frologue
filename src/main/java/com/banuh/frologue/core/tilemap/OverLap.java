@@ -1,20 +1,25 @@
 package com.banuh.frologue.core.tilemap;
+import com.banuh.frologue.core.utils.Direction;
 import com.banuh.frologue.core.utils.Vector2D;
 
 public class OverLap {
     public boolean is;
-    public Vector2D tilePos;
-    public double width;
-    public double height;
-    public String direction;
+//    public double width;
+//    public double height;
+//    public Direction direction;
+//    public Vector2D from;
+//    public Vector2D to;
 
-    public OverLap(boolean is, Vector2D tilePos, double width, double height, String direction) {
-        this.is = is;
-        this.tilePos = tilePos;
-        this.width = width;
-        this.height = height;
-        this.direction = direction;
-    }
+    public boolean isLeft = false;
+    public boolean isRight = false;
+    public boolean isTop = false;
+    public boolean isBottom = false;
+
+
+    public Vector2D topTilePos;
+    public Vector2D rightTilePos;
+    public Vector2D bottomTilePos;
+    public Vector2D leftTilePos;
 
     public OverLap(boolean is) {
         this.is = is;

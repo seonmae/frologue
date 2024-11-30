@@ -4,6 +4,7 @@ import com.banuh.frologue.core.Game;
 import com.banuh.frologue.core.scene.GameScene;
 import com.banuh.frologue.core.tilemap.OverLap;
 import com.banuh.frologue.core.tilemap.TileMap;
+import com.banuh.frologue.core.utils.Direction;
 import com.banuh.frologue.core.utils.Vector2D;
 import com.banuh.frologue.game.entity.*;
 import javafx.scene.input.KeyCode;
@@ -14,10 +15,9 @@ import java.util.Objects;
 
 public class TestScene extends GameScene {
     public double GRAVITY = 9.8;
+    public final int TILE_SIZE = 16;
     public Frog frog;
-    public Vector2D tilepos;
-    public double tilewidth;
-    public double tileheight;
+    OverLap overLap;
 
     public TestScene(Game game, String name) {
         super(game, name);
@@ -26,41 +26,41 @@ public class TestScene extends GameScene {
     @Override
     public void update() {
         frog.setVelocityX("wall", 0);
-//        OverLap overLap = isCollision(frog.getNextPos(), frog.getWidth(), frog.getHeight());
-        OverLap overLap = isCollision(frog.pos, frog.getWidth(), frog.getHeight());
-        tilepos = overLap.tilePos;
-        tileheight = overLap.height;
-        tilewidth = overLap.width;
+        OverLap overLap = isCollision(frog.getNextPos(), frog.getWidth(), frog.getHeight());
 
-        if (tilepos != null) {
-//            System.out.println(tilepos);
-//            System.out.println(frog.pos);
-//            System.out.println(frog.getNextPos().subtract(tilepos));
-        }
+        this.overLap = overLap;
 
-        if (overLap.is) {
-            System.out.println("collision");
-        }
+//        if (overLap.is) {
+//            System.out.println("TOP:    " + overLap.isTop);
+//            System.out.println("RIGHT:  " + overLap.isRight);
+//            System.out.println("BOTTOM: " + overLap.isBottom);
+//            System.out.println("LEFT:   " + overLap.isLeft);
+//            System.out.println();
+//        }
 
-/*        if (overLap.is && frog.getState("jump")) {
-            if (frog.getState("jump")) {// 점프하다가 벽에 닿은 경우
+        if (overLap.isRight || overLap.isLeft) {
+            if (frog.getState("jump")) { // 점프하다가 벽에 닿은 경우
                 frog.getVelocity("move_with_jump").multiplied(-1);
                 frog.isFlip = !frog.isFlip;
-
             } else { // 그냥 벽에 닿은 경우
-                frog.setVelocityX("wall", -frog.getVelocity("move").getX());
+                if (overLap.isLeft) {
+                    frog.pos.setX(overLap.leftTilePos.getX() + TILE_SIZE);
+                } else if (overLap.isRight) {
+                    frog.pos.setX(overLap.leftTilePos.getX() - frog.getWidth());
+                }
             }
-        }*/
+        }
 
-/*        if (overLap.is && frog.getTotalVelocity().getY() < 0) {
+        if (overLap.isTop) {
             // 점프하다가 천장에 닿은 경우
             if (frog.getState("jump")) {
                 frog.getVelocity("move").flipY();
+                frog.getVelocity("move").multiplied(0.25);
             }
-        }*/
+        }
 
         // 바닥에 닿아있는 경우
-        if (overLap.is) {
+        if (overLap.isBottom) {
             frog.setOnGround(true);
 
             if (frog.getState("fall")) {
@@ -73,7 +73,7 @@ public class TestScene extends GameScene {
                 }, game.FRAME() * 4);
             }
 
-            frog.pos.setY(overLap.tilePos.getY() - frog.getHeight());
+            frog.pos.setY(overLap.bottomTilePos.getY() - frog.getHeight());
             frog.setVelocityY("move", 0);
             frog.setVelocityY("gravity", 0);
         } else {
@@ -132,17 +132,45 @@ public class TestScene extends GameScene {
 
     @Override
     public void render() {
-        if (tilepos != null) {
-            // show hitboxes
-            game.gc.setStroke(Color.RED);
-            game.gc.strokeRect(tilepos.getX() * game.camera.scale, tilepos.getY() * game.camera.scale, tilewidth * game.camera.scale, tileheight * game.camera.scale);
-            game.gc.strokeRect(frog.pos.getX() * game.camera.scale, (frog.pos.getY()) * game.camera.scale, frog.getWidth() * game.camera.scale, frog.getHeight() * game.camera.scale);
+        if (overLap.isTop) {
+            game.gc.setFill(new Color(1f, 0f, 0f, 0.5f));
+            game.gc.fillRect(overLap.topTilePos.getX() * game.camera.scale, overLap.topTilePos.getY() * game.camera.scale, 48, 48);
         }
+        if (overLap.isRight) {
+            game.gc.setFill(new Color(0f, 1f, 0f, 0.5f));
+            game.gc.fillRect(overLap.rightTilePos.getX() * game.camera.scale, overLap.rightTilePos.getY() * game.camera.scale, 48, 48);
+        }
+        if (overLap.isBottom) {
+            game.gc.setFill(new Color(0f, 0f, 1f, 0.5f));
+            game.gc.fillRect(overLap.bottomTilePos.getX() * game.camera.scale, overLap.bottomTilePos.getY() * game.camera.scale, 48, 48);
+        }
+        if (overLap.isLeft) {
+            game.gc.setFill(new Color(0f, 0f, 0f, 0.5f));
+            game.gc.fillRect(overLap.leftTilePos.getX() * game.camera.scale, overLap.leftTilePos.getY() * game.camera.scale, 48, 48);
+        }
+
+//        if (tilepos != null) {
+//            // show hitboxes
+//            game.gc.setStroke(Color.RED);
+//            game.gc.strokeRect(tilepos.getX() * game.camera.scale, tilepos.getY() * game.camera.scale, tilewidth * game.camera.scale, tileheight * game.camera.scale);
+//            game.gc.strokeRect(frog.pos.getX() * game.camera.scale, (frog.pos.getY()) * game.camera.scale, frog.getWidth() * game.camera.scale, frog.getHeight() * game.camera.scale);
+//
+//        }
+
+//        if (overLap.is) {
+//            game.gc.setFill(new Color(1f, 0f, 0f, 0.5f));
+//            game.gc.fillRect(
+//                    overLap.from.getX() * game.camera.scale,
+//                    overLap.from.getY() * game.camera.scale,
+//                    overLap.to.getX() * game.camera.scale,
+//                    overLap.to.getY() * game.camera.scale
+//            );
+//        }
     }
 
     @Override
     public void start() {
-//        game.showHitbox = true;
+        game.showHitbox = true;
 
         frog = (Frog)game.addEntity(new WitchFrog(180, 0, game));
         TileMap tileMap = game.tileMapList.get("test");
