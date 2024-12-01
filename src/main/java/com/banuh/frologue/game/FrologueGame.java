@@ -8,10 +8,14 @@ import com.banuh.frologue.core.utils.Vector2D;
 import com.banuh.frologue.game.scenes.TestScene;
 import javafx.scene.canvas.Canvas;
 
+import java.util.ArrayList;
+
 public class FrologueGame extends Game {
     public FrologueGame(Canvas canvas, int width, int height) {
         super(canvas, width, height);
     }
+
+    public int levelCount = 1;
 
     @Override
     public void preload() {
@@ -29,7 +33,23 @@ public class FrologueGame extends Game {
             addSprite("frog-"+type+"-charged", "img/frog-"+type+"/charge.png", 1, 2, 8);
         }
 
-        TileMap tilemap = addTileMap("test", "tilemap/sample_map");
+        addSprite("frog-man-charged", "img/frog-man/death.png", 1, 10, 8);
+        addSprite("frog-man-fall", "img/frog-man/fall.png", 1, 3, 8);
+        addSprite("frog-man-hurt", "img/frog-man/hurt.png");
+        addSprite("frog-man-idle", "img/frog-man/idle.png", 1, 10, 8);
+        addSprite("frog-man-jump", "img/frog-man/jump.png", 1, 3, 8);
+        addSprite("frog-man-land", "img/frog-man/land.png");
+        addSprite("frog-man-move", "img/frog-man/move.png", 1, 6, 8);
+        addSprite("frog-man-turn", "img/frog-man/turn.png", 1, 3, 4);
+        addSprite("frog-man-charging", "img/frog-man/charge.png", 1, 2, 4);
+        addSprite("frog-man-charged", "img/frog-man/charge.png", 1, 2, 8);
+
+        addTileMap("first_map", "map/bottom");
+        addTileMap("test", "tilemap/sample_map");
+
+        for (int i = 1; i <= levelCount; i++) {
+            addTileMap("level-" + i, "map/level" + i);
+        }
     }
 
 
