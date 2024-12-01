@@ -231,7 +231,7 @@ public class PlayScene extends GameScene {
         int bottomY = firstMap.getHeight();
 
         for (int i = 0; i < 5; i++) {
-            int level = random.nextInt(1) + 1;
+            int level = random.nextInt(1) + 3;
             TileMap map = game.tileMapList.get("level-" + level);
             game.placeTileMapByBottom("level-" + level, (game.width - map.getWidth()) / 2f, 175 - bottomY);
             bottomY += map.getHeight() + level * 25;

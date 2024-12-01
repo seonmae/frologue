@@ -26,6 +26,10 @@ public class RoomServer {
     private Image idleImage, moveImage;   // 플레이어 이미지들
     public Game game;
 
+    public void connect(String roomCode) {
+
+    }
+
     public void connect() {
         try {
             socket = new Socket("127.0.0.1", 1444);
