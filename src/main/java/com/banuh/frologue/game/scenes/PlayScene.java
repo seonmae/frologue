@@ -6,28 +6,34 @@ import com.banuh.frologue.core.tilemap.OverLap;
 import com.banuh.frologue.core.tilemap.TileMap;
 import com.banuh.frologue.game.frog.*;
 import com.banuh.frologue.game.item.EnergyDrink;
+import com.banuh.frologue.server.PlayerData;
+import com.banuh.frologue.server.RoomServer;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 
+import java.util.HashMap;
 import java.util.Random;
+import java.util.UUID;
 
-public class TestScene extends GameScene {
+public class PlayScene extends GameScene {
     public double GRAVITY = 9.8;
     public final int TILE_SIZE = 16;
     public Frog frog;
-    OverLap overLap;
 
-    public TestScene(Game game, String name) {
+    OverLap overLap;
+    public HashMap<String, Frog> playerList = new HashMap<>();
+
+    public PlayScene(Game game, String name) {
         super(game, name);
     }
 
     @Override
     public void update() {
-        System.out.println("JUMP: " + frog.getState("jump"));
-        System.out.println("MOVE: " + frog.getState("move"));
-        System.out.println("FALL: " + frog.getState("fall"));
-        System.out.println();
+//        System.out.println("JUMP: " + frog.getState("jump"));
+//        System.out.println("MOVE: " + frog.getState("move"));
+//        System.out.println("FALL: " + frog.getState("fall"));
+//        System.out.println();
 
         frog.setVelocityX("wall", 0);
         OverLap overLap = isCollision(frog.getNextPos(), frog.getWidth(), frog.getHeight());
@@ -158,6 +164,8 @@ public class TestScene extends GameScene {
 
     @Override
     public void render() {
+
+
         if (overLap.isTop) {
             game.gc.setFill(new Color(1f, 0f, 0f, 0.5f));
             game.gc.fillRect((overLap.topTilePos.getX() - game.camera.pos.getX()) * game.camera.scale, (overLap.topTilePos.getY() - game.camera.pos.getY()) * game.camera.scale, 48, 48);
@@ -197,9 +205,18 @@ public class TestScene extends GameScene {
     @Override
     public void start() {
 //        game.showHitbox = true;
+        RoomServer server = new RoomServer();
+        server.game = game;
+        server.connect();
+
+        new Thread(() -> server.receiveUpdates(playerList)).start();
+        game.setInterval(() -> {
+            server.sendPlayerPosition(frog);
+        }, game.FRAME());
         game.backgroundColor = Color.web("#6bc6ff");
 
-        frog = (Frog)game.addEntity(new NormalFrog(150, 50, game));
+        frog = (Frog)game.addEntity(new WitchFrog(150, 50, game));
+        frog.pid = UUID.randomUUID().toString();
         game.addEntity(new EnergyDrink(200, 40, game));
 
         TileMap firstMap = game.tileMapList.get("first_map");
@@ -216,8 +233,8 @@ public class TestScene extends GameScene {
         for (int i = 0; i < 5; i++) {
             int level = random.nextInt(1) + 1;
             TileMap map = game.tileMapList.get("level-" + level);
-            game.placeTileMapByBottom("level-" + level, (game.width - map.getWidth()) / 2f, 184 - bottomY);
-            bottomY += map.getHeight();
+            game.placeTileMapByBottom("level-" + level, (game.width - map.getWidth()) / 2f, 175 - bottomY);
+            bottomY += map.getHeight() + level * 25;
         }
 
         addEventHandler(KeyEvent.KEY_PRESSED, event -> {

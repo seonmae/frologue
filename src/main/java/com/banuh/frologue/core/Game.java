@@ -49,7 +49,8 @@ public abstract class Game {
 
   private HashMap<String, Sprite> spriteMap = new HashMap<>();
   public long runTime = 0;
-  public ArrayList<Schedule> schedules = new ArrayList<>();
+  public ArrayList<Schedule> timeoutSchedules = new ArrayList<>();
+  public ArrayList<Schedule> intervalSchedules = new ArrayList<>();
   public HashMap<String, AudioClip> soundList = new HashMap<>();
 
   public Game(Canvas canvas, int width, int height, GameScene firstScene) {
@@ -101,12 +102,21 @@ public abstract class Game {
   private void defaultUpdate() {
     runTime += (int)updateInterval;
 
-    Iterator<Schedule> iterator = schedules.iterator();
-    while (iterator.hasNext()) {
-      Schedule schedule = iterator.next();
+    Iterator<Schedule> iter1 = timeoutSchedules.iterator();
+    while (iter1.hasNext()) {
+      Schedule schedule = iter1.next();
       if (schedule.endTime <= runTime) {
         schedule.apply();
-        iterator.remove();
+        iter1.remove();
+      }
+    }
+
+    Iterator<Schedule> iter2 = intervalSchedules.iterator();
+    while (iter2.hasNext()) {
+      Schedule schedule = iter2.next();
+      if (schedule.endTime <= runTime) {
+        schedule.apply();
+        schedule.endTime += schedule.duration;
       }
     }
 
@@ -301,7 +311,11 @@ public abstract class Game {
   }
 
   public void setTimeout(Runnable callback, long duration) {
-    this.schedules.add(new Schedule(runTime, duration * 1000, callback));
+    this.timeoutSchedules.add(new Schedule(runTime, duration * 1000, callback));
+  }
+
+  public void setInterval(Runnable callback, long duration) {
+    this.intervalSchedules.add(new Schedule(runTime, duration * 1000, callback));
   }
 
   public double setFPS(int fps) {
@@ -331,6 +345,7 @@ public abstract class Game {
   // start 에서 preload 나 주기 등을 관리
   public void run() {
     preload();
+    gc.setImageSmoothing(false);
 
     fxscene.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
       switch (event.getCode()) {

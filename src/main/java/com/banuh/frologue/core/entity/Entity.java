@@ -14,12 +14,13 @@ import java.util.LinkedHashMap;
 public class Entity {
     public Vector2D pos = new Vector2D();
     public Game game;
+    public boolean isDummy = false;
 
     /** 초당 가능 속도(px) */
     private HashMap<String, Vector2D> velocity = new HashMap<>();
 
     private Sprite defaultSprite;
-    private Sprite activeSprite;
+    public Sprite activeSprite;
     private GameScene scene;
     private boolean stateIsChanged = true;
     final private LinkedHashMap<String, StatePair> stateList = new LinkedHashMap<>();

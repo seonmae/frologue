@@ -1,14 +1,8 @@
 package com.banuh.frologue.game;
 
 import com.banuh.frologue.core.Game;
-import com.banuh.frologue.core.camera.GameCamera;
-import com.banuh.frologue.core.entity.Entity;
-import com.banuh.frologue.core.tilemap.TileMap;
-import com.banuh.frologue.core.utils.Vector2D;
-import com.banuh.frologue.game.scenes.TestScene;
+import com.banuh.frologue.game.scenes.PlayScene;
 import javafx.scene.canvas.Canvas;
-
-import java.util.ArrayList;
 
 public class FrologueGame extends Game {
     public FrologueGame(Canvas canvas, int width, int height) {
@@ -53,7 +47,7 @@ public class FrologueGame extends Game {
         addSound("reflect", "sound/effect/reflect.mp3");
 
         for (int i = 1; i <= levelCount; i++) {
-            addTileMap("level-" + i, "map/level" + i);
+            addTileMap("level-" + i, "map/map" + i);
         }
     }
 
@@ -70,7 +64,7 @@ public class FrologueGame extends Game {
 
     @Override
     public void start() {
-        this.addScene(new TestScene(this, "test"));
+        this.addScene(new PlayScene(this, "test"));
         this.setCurrentScene("test");
         this.camera.scale = 3;
     }
