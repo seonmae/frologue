@@ -270,7 +270,7 @@ public class StartPage extends Application {
 
     private void playButtonSound() {
         try {
-            String soundFile = "src/main/resources/music/main_button_sound.mp3";
+            String soundFile = "src/main/resources/sound/effect/main_button_sound.mp3";
             Media buttonSound = new Media(new File(soundFile).toURI().toString());
             MediaPlayer soundPlayer = new MediaPlayer(buttonSound);
             soundPlayer.setVolume(soundVolume);
