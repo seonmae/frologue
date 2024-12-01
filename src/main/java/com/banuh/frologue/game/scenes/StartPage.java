@@ -15,6 +15,11 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import com.banuh.frologue.App;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.stage.Stage;
+
 
 public class StartPage extends Application {
     private double animationTimeJumpFrog = 0; // 개구리 움직임을 위한 타이밍 변수
@@ -180,7 +185,7 @@ public class StartPage extends Application {
         numberField.setPromptText("숫자 4자리를 입력하세요");
         numberField.setLayoutX(70); // X 좌표
         numberField.setLayoutY(150); // Y 좌표 (하단으로 이동)
-        numberField.setPrefWidth(175); // 너비
+        numberField.setPrefWidth(152); // 너비
         numberField.setPrefHeight(35); // 높이 설정
         numberField.setStyle(
                 "-fx-background-color: #80c571; " +  // 배경색 연회색
@@ -221,6 +226,39 @@ public class StartPage extends Application {
 
 // 버튼 추가
         layout.getChildren().add(confirmButton);
+
+        canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            double mouseX = event.getX();
+            double mouseY = event.getY();
+
+            double startAppImageX = 78; // X 좌표
+            double startAppImageY = 32; // Y 좌표
+            double startAppImageWidth = 240; // 이미지 너비
+            double startAppImageHeight = 90; // 이미지 높이
+
+// 마우스가 이미지 영역을 클릭했는지 확인
+            if (mouseX >= startAppImageX && mouseX <= startAppImageX + startAppImageWidth &&
+                    mouseY >= startAppImageY && mouseY <= startAppImageY + startAppImageHeight) {
+                System.out.println("Waiting Page로 이동");
+                try {
+                    // 현재 Stage 가져오기
+                    Stage currentStage = (Stage) canvas.getScene().getWindow();
+
+                    // waitingPage 호출
+                    waitingPage waitingPageScene = new waitingPage();
+
+                    // StartPage 닫기
+                    currentStage.close();
+
+                    // waitingPage 실행
+                    Stage waitingStage = new Stage(); // 새 Stage 생성
+                    waitingPageScene.start(waitingStage); // waitingPage 시작
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        });
 
 
 
