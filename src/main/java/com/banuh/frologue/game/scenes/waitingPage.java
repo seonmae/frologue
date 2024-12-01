@@ -80,23 +80,81 @@ public class waitingPage extends Application {
         int modalWidth = 750;
         int modalHeight = 450;
 
+        // Pane 레이아웃 생성
+        Pane modalLayout = new Pane();
+
         // Canvas 생성
         Canvas modalCanvas = new Canvas(modalWidth, modalHeight);
         GraphicsContext modalGc = modalCanvas.getGraphicsContext2D();
         modalGc.setImageSmoothing(false); // 이미지 확대 시 보간 비활성화
+        modalLayout.getChildren().add(modalCanvas);
 
         // SelectEx 이미지 그리기
-        Image selectExImage = new Image("file:src/main/resources/img/ui/selectEx.png");
+        Image selectExImage = new Image("file:src/main/resources/img/ui/charecter-select.png");
         modalGc.drawImage(selectExImage, 0, 0, modalWidth, modalHeight);
+
+        // 개구리 이미지 위치와 크기 정의
+        double[][] frogData = {
+                {483, 35, 70, 70}, // nomalFrogImage
+                {563, 35, 70, 70}, // ninjafrogImage
+                {643, 35, 70, 70}, // oxfrogImage
+                {483, 115, 70, 70}, // spacefrogImage
+                {563, 115, 70, 70}, // umbrellafrogImage
+                {643, 115, 70, 70}  // witchfrogImage
+        };
+
+        Image[] frogImages = {
+                new Image("file:src/main/resources/img/icon/nomalfrog.png"),
+                new Image("file:src/main/resources/img/icon/ninjafrog.png"),
+                new Image("file:src/main/resources/img/icon/oxfrog.png"),
+                new Image("file:src/main/resources/img/icon/spacefrog.png"),
+                new Image("file:src/main/resources/img/icon/umbrellafrog.png"),
+                new Image("file:src/main/resources/img/icon/witchfrog.png")
+        };
+
+        // 선택된 블록을 추적하는 변수
+        Pane selectedBlock = new Pane();
+        selectedBlock.setStyle("-fx-background-color: rgba(0, 0, 0, 0.45);");
+        selectedBlock.setVisible(false);
+        modalLayout.getChildren().add(selectedBlock);
+
+        for (int i = 0; i < frogImages.length; i++) {
+            double x = frogData[i][0];
+            double y = frogData[i][1];
+            double width = frogData[i][2];
+            double height = frogData[i][3];
+
+            // 이미지를 그리기
+            modalGc.drawImage(frogImages[i], x, y, width, height);
+
+            // 블록의 클릭 영역 정의
+            Pane frogBlock = new Pane();
+            frogBlock.setPrefSize(width, height);
+            frogBlock.setLayoutX(x);
+            frogBlock.setLayoutY(y);
+            frogBlock.setStyle("-fx-background-color: transparent;"); // 투명 클릭 영역
+            modalLayout.getChildren().add(frogBlock);
+
+            // 상호작용: 마우스 모양 변경
+            frogBlock.setOnMouseEntered(event -> frogBlock.setCursor(javafx.scene.Cursor.HAND));
+            frogBlock.setOnMouseExited(event -> frogBlock.setCursor(javafx.scene.Cursor.DEFAULT));
+
+            // 클릭 이벤트 처리
+            frogBlock.setOnMouseClicked(event -> {
+                double scaleFactor = 0.9;
+                selectedBlock.setLayoutX(x + (width * (1 - scaleFactor)) / 2); // 중앙 정렬
+                selectedBlock.setLayoutY(y + (height * (1 - scaleFactor)) / 2); // 중앙 정렬
+                selectedBlock.setPrefSize(width * scaleFactor, height * scaleFactor); // 크기 축소
+                selectedBlock.setVisible(true); // 블록 보이기
+            });
+        }
 
         // 닫기 버튼 이미지 및 위치 설정
         Image closeImage = new Image("file:src/main/resources/img/ui/close.png");
-        double closeButtonWidth = 25;
-        double closeButtonHeight = 25;
-        double closeButtonX = 20; // 왼쪽 위 (여백 20)
-        double closeButtonY = 20;
-
-        // 닫기 버튼 그리기
+        double closeButtonWidth = 30;
+        double closeButtonHeight = 30;
+        double closeButtonX = 30;
+        double closeButtonY = 30;
         modalGc.drawImage(closeImage, closeButtonX, closeButtonY, closeButtonWidth, closeButtonHeight);
 
         // 닫기 버튼 클릭 이벤트 처리
@@ -111,10 +169,6 @@ public class waitingPage extends Application {
             }
         });
 
-        // 레이아웃
-        Pane modalLayout = new Pane();
-        modalLayout.getChildren().add(modalCanvas);
-
         // Scene 생성 및 배경 투명 설정
         Scene modalScene = new Scene(modalLayout, modalWidth, modalHeight);
         modalScene.setFill(javafx.scene.paint.Color.TRANSPARENT); // Scene 배경 투명 설정
@@ -123,5 +177,6 @@ public class waitingPage extends Application {
         // 모달 창 표시
         modalStage.showAndWait();
     }
+
 
 }
