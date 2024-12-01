@@ -1,5 +1,6 @@
 module com.banuh.frologue {
     requires javafx.controls;
+    requires java.desktop;
     requires com.fasterxml.jackson.databind;
     requires javafx.fxml;
     requires javafx.graphics;
