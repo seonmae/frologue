@@ -1,7 +1,9 @@
 package com.banuh.frologue.game;
 
 import com.banuh.frologue.core.Game;
+import com.banuh.frologue.core.camera.GameCamera;
 import com.banuh.frologue.core.entity.Entity;
+import com.banuh.frologue.core.tilemap.TileMap;
 import com.banuh.frologue.core.utils.Vector2D;
 import com.banuh.frologue.game.scenes.TestScene;
 import javafx.scene.canvas.Canvas;
@@ -23,8 +25,13 @@ public class FrologueGame extends Game {
             addSprite("frog-"+type+"-land", "img/frog-"+type+"/land.png", 1, 2, 8);
             addSprite("frog-"+type+"-move", "img/frog-"+type+"/land.png", 1, 2, 8);
             addSprite("frog-"+type+"-turn", "img/frog-"+type+"/turn.png");
+            addSprite("frog-"+type+"-charging", "img/frog-"+type+"/charge.png", 1, 2, 4);
+            addSprite("frog-"+type+"-charged", "img/frog-"+type+"/charge.png", 1, 2, 8);
         }
+
+        TileMap tilemap = addTileMap("test", "tilemap/sample_map");
     }
+
 
     @Override
     public void update() {
@@ -40,6 +47,6 @@ public class FrologueGame extends Game {
     public void start() {
         this.addScene(new TestScene(this, "test"));
         this.setCurrentScene("test");
-        this.showHitbox = true;
+        this.camera.scale = 3;
     }
 }

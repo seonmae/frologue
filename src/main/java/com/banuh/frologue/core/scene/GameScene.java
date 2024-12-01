@@ -3,6 +3,9 @@ package com.banuh.frologue.core.scene;
 import com.banuh.frologue.core.Game;
 import com.banuh.frologue.core.entity.Entity;
 import com.banuh.frologue.core.input.InputEvent;
+import com.banuh.frologue.core.tilemap.OverLap;
+import com.banuh.frologue.core.tilemap.PlacedTileMap;
+import com.banuh.frologue.core.utils.Vector2D;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
@@ -17,6 +20,7 @@ public class GameScene {
     public Game game;
     public ArrayList<Entity> entityList = new ArrayList<>();
     public ArrayList<InputEvent> eventList = new ArrayList<>();
+    public ArrayList<PlacedTileMap> placedTilemapList = new ArrayList<>();
 
     public GameScene(Game game, String name) {
         this.game = game;
@@ -89,5 +93,13 @@ public class GameScene {
         end();
         endCallback.run();
         defaultEnd();
+    }
+
+    public OverLap isCollision(Vector2D pos, double width, double height) {
+        for (PlacedTileMap map: placedTilemapList) {
+            OverLap collision = map.isCollision("solider", pos, width, height);
+            if (collision.is) return collision;
+        }
+        return new OverLap(false);
     }
 }
