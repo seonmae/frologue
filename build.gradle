@@ -27,15 +27,24 @@ tasks.withType(JavaCompile) {
 application {
     mainModule = 'com.banuh.frologue'
     mainClass = 'com.banuh.frologue.App'
+    applicationDefaultJvmArgs = [
+            '--module-path', "${project.buildDir}/libs",
+            '--add-modules', 'javafx.controls,javafx.fxml,javafx.media'
+    ]
 }
 
 javafx {
     version = '17.0.6'
-    modules = ['javafx.controls', 'javafx.fxml']
+    modules = ['javafx.controls', 'javafx.fxml','javafx.media','javafx.base','javafx.graphics','javafx.controls']
 }
 
 dependencies {
 
+    implementation "org.openjfx:javafx-media:17.0.6"
+    implementation "org.openjfx:javafx-controls:17.0.6"
+    implementation "org.openjfx:javafx-fxml:17.0.6"
+    implementation "org.openjfx:javafx-base:17.0.6"
+    implementation "org.openjfx:javafx-graphics:17.0.6"
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 }
