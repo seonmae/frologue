@@ -7,6 +7,7 @@ import com.banuh.frologue.core.entity.Hitbox;
 public abstract class Frog extends Entity {
     public String type;
     public double JUMP_STRENGTH = 100;
+    public double JUMP_METER = 100;
     public double jump_scale = 1;
     public double SPEED = 30;
     private boolean onGround = false;
