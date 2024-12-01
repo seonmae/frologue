@@ -3,6 +3,7 @@ package com.banuh.frologue;
 import com.banuh.frologue.core.tilemap.TileMapData;
 import com.banuh.frologue.core.tilemap.TileMapLoader;
 import com.banuh.frologue.game.FrologueGame;
+import com.banuh.frologue.server.RoomServer;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
