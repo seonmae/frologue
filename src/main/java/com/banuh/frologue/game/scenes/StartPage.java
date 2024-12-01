@@ -5,37 +5,27 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
+import javafx.stage.Stage;
+import com.banuh.frologue.App;
+import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.util.Properties;
-import com.banuh.frologue.App;
 
 public class StartPage extends Application {
     private double animationTimeJumpFrog = 0; // 개구리 움직임을 위한 타이밍 변수
     private boolean isHoveringStart = false; // 버튼 상호작용을 위해
     private boolean isHoveringExplanation = false;
     private boolean isHoveringExit = false;
-    private MediaPlayer mediaPlayer; // 배경 음악을 위한 객체
-    private Stage settingsStage = null; // 설정창
-
-    private double soundVolume = 0.5; // 효과음 기본 설정 (50%)
-    private double musicVolume = 0.5; // 배경음악 기본 설정 (50%)
 
     @Override
     public void start(Stage primaryStage) {
@@ -44,20 +34,12 @@ public class StartPage extends Application {
         int canvasWidth = 900;
         int canvasHeight = 600;
 
-        loadSettings();
-        initializeBackgroundMusic(); // 배경음악 초기화
-        startBackgroundMusic(); // 배경음악 시작
-
-        // 창 닫힐 때 배경음악 정지
-        primaryStage.setOnCloseRequest(event -> stopBackgroundMusic());
-
         Image wallpaper1 = new Image("file:src/main/resources/img/start-page/main_wallpaper1.png"); // 배경1
         Image wallpaper2 = new Image("file:src/main/resources/img/start-page/main_wallpaper2.png"); // 배경2
         Image teamNameImage = new Image("file:src/main/resources/img/start-page/team_name.png"); // 별것도아닌데어금지
         Image mainTitleImage = new Image("file:src/main/resources/img/start-page/game_title.png"); // 개구리다
         Image jumpFrogImage = new Image("file:src/main/resources/img/frog-normal/jump.png"); // 점프 개구리
         Image startButtonImage = new Image("file:src/main/resources/img/start-page/main_game_start.png"); // 게임 시작 버튼
-        Image explanationButtonImage = new Image("file:src/main/resources/img/start-page/main_game_explanation.png"); // 게임 설명 버튼
         Image exitButtonImage = new Image("file:src/main/resources/img/start-page/main_game_end.png"); // 게임 종료 버튼
 
         Canvas canvas = new Canvas(canvasWidth, canvasHeight);
@@ -94,7 +76,7 @@ public class StartPage extends Application {
         double buttonGap = 50;
 
         // 버튼 위치
-        double buttonX1 = (canvasWidth - (buttonWidth * 3 + buttonGap * 2)) / 2;
+        double buttonX1 = (canvasWidth - (buttonWidth * 3 + buttonGap * 2))/2 ;
         double buttonX2 = buttonX1 + buttonWidth + buttonGap;
         double buttonX3 = buttonX2 + buttonWidth + buttonGap;
 
@@ -103,7 +85,6 @@ public class StartPage extends Application {
             double mouseY = event.getY();
 
             isHoveringStart = isMouseHovering(mouseX, mouseY, buttonX1, buttonY, buttonWidth, buttonHeight);
-            isHoveringExplanation = isMouseHovering(mouseX, mouseY, buttonX2, buttonY, buttonWidth, buttonHeight);
             isHoveringExit = isMouseHovering(mouseX, mouseY, buttonX3, buttonY, buttonWidth, buttonHeight);
         });
 
@@ -113,27 +94,12 @@ public class StartPage extends Application {
 
             if (isHoveringStart) {
                 System.out.println("게임 시작 버튼 클릭됨");
-                playButtonSound(); // 효과음
-                stopBackgroundMusic(); // 배경음악 중지
-                try {
-                    new Thread(() -> Application.launch(App.class)).start();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                roomSelectionWindow();// 게임 방 선택 모달 창 호출
             }
-
-            if (isHoveringExplanation) {
-                System.out.println("게임 설명 버튼 클릭됨");
-                playButtonSound();
-                toggleSettingsWindow(); // 설정창 호출
-            }
-
             if (isHoveringExit) {
                 System.out.println("게임 종료 버튼 클릭됨");
-                playButtonSound();
                 primaryStage.close();
-                stopBackgroundMusic(); // 배경음악 중지
-                saveSettings(); // 설정 저장
+
             }
         });
 
@@ -145,21 +111,22 @@ public class StartPage extends Application {
                 double srcWidth = 2700;
                 double srcHeight = 1800;
 
-                wallpaper1X[0] += 1;
-                wallpaper2X[0] += 2;
+                wallpaper1X[0] += 0.5;
+                wallpaper2X[0] += 1;
 
                 if (wallpaper1X[0] <= -srcWidth) {
-                    wallpaper1X[0] += srcWidth;
+                    wallpaper1X[0] += srcWidth  ;
                 }
 
                 if (wallpaper2X[0] <= -srcWidth) {
                     wallpaper2X[0] += srcWidth;
                 }
 
-                gc.clearRect(0, 0, canvasWidth, canvasHeight);
+                gc.clearRect(0, 0, 900, 600);
 
                 gc.drawImage(wallpaper1, 0 + wallpaper1X[0], 0, srcWidth, srcHeight, 0, 0, 900, 600);
                 gc.drawImage(wallpaper2, 0 + wallpaper2X[0], 0, srcWidth, srcHeight, 0, 0, 900, 600);
+
 
                 gc.drawImage(teamNameImage, teamNameX, teamNameY, teamNameScaledWidth, teamNameScaledHeight);
                 gc.drawImage(mainTitleImage, mainTitleX, mainTitleY, mainTitleScaledWidth, mainTitleScaledHeight);
@@ -168,7 +135,6 @@ public class StartPage extends Application {
                 gc.drawImage(jumpFrogImage, jumpFrogX, baseJumpFrogY + jumpFrogOffsetY, jumpFrogScaledWidth, jumpFrogScaledHeight);
 
                 drawButton(gc, startButtonImage, buttonX1, buttonY, buttonWidth, buttonHeight, isHoveringStart);
-                drawButton(gc, explanationButtonImage, buttonX2, buttonY, buttonWidth, buttonHeight, isHoveringExplanation);
                 drawButton(gc, exitButtonImage, buttonX3, buttonY, buttonWidth, buttonHeight, isHoveringExit);
             }
         }.start();
@@ -178,88 +144,136 @@ public class StartPage extends Application {
         primaryStage.setScene(new Scene(layout, canvasWidth, canvasHeight));
         primaryStage.show();
     }
-    private void toggleSettingsWindow() {
-        if (settingsStage == null || !settingsStage.isShowing()) {
-            settingsStage = new Stage();
-            settingsStage.initStyle(javafx.stage.StageStyle.TRANSPARENT);
+    private void roomSelectionWindow() {
+        // 새로운 Stage 생성
+        Stage roomSelectionStage = new Stage();
+        roomSelectionStage.initStyle(javafx.stage.StageStyle.TRANSPARENT); // 창 스타일 투명 설정
+        roomSelectionStage.initModality(javafx.stage.Modality.APPLICATION_MODAL); // 모달 창 설정
 
-            // 모달 창 설정
-            settingsStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+        // 레이아웃 생성
+        Pane layout = new Pane();
+        layout.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, null, null))); // 투명 배경 설정
 
-            // 레이아웃 생성
-            Pane layout = new Pane();
-            layout.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, null, null)));
+        // Canvas 생성
+        Canvas canvas = new Canvas(400, 250); // Canvas 크기를 모달 창 크기에 맞게 설정
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc.setImageSmoothing(false); // 이미지 확대 시 깨짐 방지
 
-            // 배경 이미지 로드 및 설정
-            Image backgroundImage = new Image("file:src/main/resources/img/start-page/explanatioin_sign.png");
-            ImageView backgroundView = new ImageView(backgroundImage);
-            backgroundView.setFitWidth(400);
-            backgroundView.setFitHeight(250);
+        // 배경 이미지 그리기
+        Image backgroundImage = new Image("file:src/main/resources/img/ui/create_room.png");
+        gc.drawImage(backgroundImage, 0, 0, 400, 250); // 400x300 크기로 배경 이미지 그리기
 
-            // 배경 이미지를 레이아웃에 추가
-            layout.getChildren().add(backgroundView);
+        // Canvas를 레이아웃에 추가
+        layout.getChildren().add(canvas);
 
-            // 효과음 레이블 생성 및 설정
-            Label soundLabel = new Label("Sound effect 효과음:");
-            soundLabel.setLayoutX(30);
-            soundLabel.setLayoutY(30);
-            soundLabel.setFont(new Font("Arial", 18));
-            soundLabel.setTextFill(Color.BLACK);
+        // 닫기 버튼
+        Image closeImage = new Image("file:src/main/resources/img/ui/close.png");
+        ImageView closeButton = new ImageView(closeImage);
+        closeButton.setFitWidth(25);
+        closeButton.setFitHeight(25);
+        closeButton.setLayoutX(20); // 오른쪽 위 위치
+        closeButton.setLayoutY(20);
+        closeButton.setOnMouseClicked(event -> roomSelectionStage.close());
+        layout.getChildren().add(closeButton);
 
-            // 효과음 슬라이더 생성 및 설정
-            Slider soundSlider = new Slider(0, 100, soundVolume * 100);
-            soundSlider.setLayoutX(30);
-            soundSlider.setLayoutY(60);
-            soundSlider.setPrefWidth(340);
-            soundSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-                soundVolume = newVal.doubleValue() / 100.0;
-                playButtonSound();
-            });
+        // 대기 화면으로 가는 것
+        Image startAppImage = new Image("file:src/main/resources/img/ui/create-button.png");
+        gc.drawImage(startAppImage, 78, 32, 240, 90); // Canvas에 버튼 이미지를 직접 그리기
 
-            // 배경음악 레이블 생성 및 설정
-            Label musicLabel = new Label("Music 배경음악:");
-            musicLabel.setLayoutX(30);
-            musicLabel.setLayoutY(100);
-            musicLabel.setFont(new Font("Arial", 18));
-            musicLabel.setTextFill(Color.BLACK);
+        // 숫자 입력 TextField 생성
+        TextField numberField = new TextField();
+        numberField.setPromptText("숫자 4자리를 입력하세요");
+        numberField.setLayoutX(70); // X 좌표
+        numberField.setLayoutY(150); // Y 좌표 (하단으로 이동)
+        numberField.setPrefWidth(152); // 너비
+        numberField.setPrefHeight(35); // 높이 설정
+        numberField.setStyle(
+                "-fx-background-color: #80c571; " +  // 배경색 연회색
+                        "-fx-border-color: #171818; " +      // 테두리 색상 회색
+                        "-fx-border-radius: 5; " +           // 테두리 둥글게
+                        "-fx-background-radius: 8; " +       // 배경 둥글게
+                        "-fx-padding: 5; " +                 // 내부 여백
+                        "-fx-font-size: 25px; " +            // 글자 크기
+                        "-fx-text-fill: #333333; " +         // 텍스트 색상 진회색
+                        "-fx-font-family: 'Courier New';"  +  // 글꼴 스타일
+                        "-fx-border-width: 4"
+        );
 
-            // 배경음악 슬라이더 생성 및 설정
-            Slider musicSlider = new Slider(0, 100, musicVolume * 100);
-            musicSlider.setLayoutX(30);
-            musicSlider.setLayoutY(130);
-            musicSlider.setPrefWidth(340);
-            musicSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-                musicVolume = newVal.doubleValue() / 100.0;
-                if (mediaPlayer != null) {
-                    mediaPlayer.setVolume(musicVolume);
+// 숫자만 입력되도록 필터 추가
+        numberField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) { // 정규식: 숫자만 허용
+                numberField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+            if (numberField.getText().length() > 4) { // 최대 4자리 제한
+                numberField.setText(numberField.getText().substring(0, 4));
+            }
+        });
+        layout.getChildren().add(numberField);
+
+        Image confirmImage = new Image("file:src/main/resources/img/ui/findroom-button.png",
+                300, 156, // 요청 크기: 두 배로 로드
+                true, false); // 비율 유지, 보간 비활성화
+
+        ImageView confirmButton = new ImageView(confirmImage);
+
+        confirmButton.setFitWidth(145); // 원하는 폭
+        confirmButton.setFitHeight(75); // 원하는 높이
+        confirmButton.setPreserveRatio(true); // 비율 유지
+        confirmButton.setSmooth(false); // 보간 비활성화
+
+        confirmButton.setLayoutX(170); // X 좌표
+        confirmButton.setLayoutY(145); // Y 좌표
+
+// 버튼 추가
+        layout.getChildren().add(confirmButton);
+
+        canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            double mouseX = event.getX();
+            double mouseY = event.getY();
+
+            double startAppImageX = 78; // X 좌표
+            double startAppImageY = 32; // Y 좌표
+            double startAppImageWidth = 240; // 이미지 너비
+            double startAppImageHeight = 90; // 이미지 높이
+
+// 마우스가 이미지 영역을 클릭했는지 확인
+            if (mouseX >= startAppImageX && mouseX <= startAppImageX + startAppImageWidth &&
+                    mouseY >= startAppImageY && mouseY <= startAppImageY + startAppImageHeight) {
+                System.out.println("Waiting Page로 이동");
+                try {
+                    // 현재 Stage 가져오기
+                    Stage currentStage = (Stage) canvas.getScene().getWindow();
+
+                    // waitingPage 호출
+                    waitingPage waitingPageScene = new waitingPage();
+
+                    // StartPage 닫기
+                    currentStage.close();
+
+                    // waitingPage 실행
+                    Stage waitingStage = new Stage(); // 새 Stage 생성
+                    waitingPageScene.start(waitingStage); // waitingPage 시작
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            });
+            }
 
-            // 취소 버튼 생성 및 설정
-            Button cancelButton = new Button("CANCEL");
-            cancelButton.setLayoutX(165);
-            cancelButton.setLayoutY(180);
-            cancelButton.setOnAction(e -> settingsStage.close());
+        });
 
-            // 레이아웃에 컴포넌트 추가
-            layout.getChildren().addAll(soundLabel, soundSlider, musicLabel, musicSlider, cancelButton);
 
-            // 투명 배경 설정
-            Scene scene = new Scene(layout, 400, 250);
-            scene.setFill(Color.TRANSPARENT);
 
-            settingsStage.setScene(scene);
-            settingsStage.show();
-        } else {
-            settingsStage.close();
-            settingsStage = null;
-        }
+        // Scene 생성 및 Stage에 추가
+        Scene roomScene = new Scene(layout, 400, 300);
+        roomScene.setFill(Color.TRANSPARENT); // Scene 배경을 투명으로 설정
+        roomSelectionStage.setScene(roomScene);
+
+        // 모달 창 표시
+        roomSelectionStage.showAndWait();
     }
 
     private boolean isMouseHovering(double mouseX, double mouseY, double x, double y, double width, double height) {
         return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
     }
-
     private void drawButton(GraphicsContext gc, Image buttonImage, double x, double y, double width, double height, boolean isHovering) {
         if (isHovering) {
             gc.drawImage(buttonImage, x - 2, y - 2, width + 4, height + 4);
@@ -267,69 +281,9 @@ public class StartPage extends Application {
             gc.drawImage(buttonImage, x, y, width, height);
         }
     }
-
-    private void playButtonSound() {
-        try {
-            String soundFile = "src/main/resources/sound/effect/main_button_sound.mp3";
-            Media buttonSound = new Media(new File(soundFile).toURI().toString());
-            MediaPlayer soundPlayer = new MediaPlayer(buttonSound);
-            soundPlayer.setVolume(soundVolume);
-            soundPlayer.play();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void initializeBackgroundMusic() {
-        try {
-            String musicFile = "src/main/resources/sound/music/frog_main_song.mp3";
-            Media backgroundMusic = new Media(new File(musicFile).toURI().toString());
-            mediaPlayer = new MediaPlayer(backgroundMusic);
-            mediaPlayer.setVolume(musicVolume);
-            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void startBackgroundMusic() {
-        if (mediaPlayer != null) {
-            mediaPlayer.play();
-        }
-    }
-
-    private void stopBackgroundMusic() {
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-        }
-    }
-
-    private void loadSettings() {
-        try {
-            File configFile = new File("src/main/resources/config.properties");
-            if (configFile.exists()) {
-                Properties properties = new Properties();
-                properties.load(new FileInputStream(configFile));
-                soundVolume = Double.parseDouble(properties.getProperty("soundVolume", "0.5"));
-                musicVolume = Double.parseDouble(properties.getProperty("musicVolume", "0.5"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void saveSettings() {
-        try {
-            Properties properties = new Properties();
-            properties.setProperty("soundVolume", String.valueOf(soundVolume));
-            properties.setProperty("musicVolume", String.valueOf(musicVolume));
-            properties.store(new FileOutputStream("src/main/resources/config.properties"), null);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public static void main(String[] args) {
         launch(args);
     }
+
+
 }
