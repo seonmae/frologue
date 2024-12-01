@@ -191,8 +191,8 @@ public class App extends Application {
     }
   }
 
+  //플레이어 그리는 기능인데 제대로 작동 안 함 수정해야 됨. 도와줘!!!
   private void drawPlayers() {
-    gc.clearRect(0, 0, 900, 600); // 캔버스를 지움
 
     for (Map.Entry<String, PlayerInfo> entry : players.entrySet()) {
       PlayerInfo player = entry.getValue();
