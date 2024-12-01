@@ -4,15 +4,11 @@ import com.banuh.frologue.core.Game;
 import com.banuh.frologue.core.scene.GameScene;
 import com.banuh.frologue.core.tilemap.OverLap;
 import com.banuh.frologue.core.tilemap.TileMap;
-import com.banuh.frologue.core.utils.Direction;
-import com.banuh.frologue.core.utils.Vector2D;
-import com.banuh.frologue.game.FrologueGame;
-import com.banuh.frologue.game.entity.*;
+import com.banuh.frologue.game.frog.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 
-import java.util.Objects;
 import java.util.Random;
 
 public class TestScene extends GameScene {

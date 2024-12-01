@@ -1,4 +1,4 @@
-package com.banuh.frologue.game.entity;
+package com.banuh.frologue.game.frog;
 
 import com.banuh.frologue.core.Game;
 import com.banuh.frologue.core.entity.Entity;
