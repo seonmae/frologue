@@ -90,6 +90,7 @@ class Clients implements Runnable {
             String message;
             while ((message = tcpReader.readLine()) != null) {
                 if (room != null && message.startsWith("Position:")) {
+                    // 위치와 상태 정보를 포함한 메시지를 브로드캐스트
                     room.broadcast(message, this);
                 }
             }
