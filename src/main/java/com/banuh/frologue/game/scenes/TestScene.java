@@ -5,6 +5,7 @@ import com.banuh.frologue.core.scene.GameScene;
 import com.banuh.frologue.core.tilemap.OverLap;
 import com.banuh.frologue.core.tilemap.TileMap;
 import com.banuh.frologue.game.frog.*;
+import com.banuh.frologue.game.item.EnergyDrink;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
@@ -198,7 +199,9 @@ public class TestScene extends GameScene {
 //        game.showHitbox = true;
         game.backgroundColor = Color.web("#6bc6ff");
 
-        frog = (Frog)game.addEntity(new SpaceFrog(150, 50, game));
+        frog = (Frog)game.addEntity(new NormalFrog(150, 50, game));
+        game.addEntity(new EnergyDrink(200, 40, game));
+
         TileMap firstMap = game.tileMapList.get("first_map");
         game.placeTileMapByBottom("first_map", (game.width - firstMap.getWidth()) / 2f, 200);
 

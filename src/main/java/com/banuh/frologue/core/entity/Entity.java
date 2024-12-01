@@ -23,6 +23,7 @@ public class Entity {
     private GameScene scene;
     private boolean stateIsChanged = true;
     final private LinkedHashMap<String, StatePair> stateList = new LinkedHashMap<>();
+    private HashMap<String, Boolean> flagList = new HashMap<>();
 
     public boolean isFlip = false;
     public Hitbox hitbox;
@@ -162,6 +163,18 @@ public class Entity {
 
     public GameScene getScene() {
         return scene;
+    }
+
+    public boolean getFlag(String name) {
+        return flagList.get(name);
+    }
+
+    public void setFlag(String name, boolean flag) {
+        flagList.put(name, flag);
+    }
+
+    public void setFlag(String name) {
+        flagList.put(name, true);
     }
 
     static class StatePair {
