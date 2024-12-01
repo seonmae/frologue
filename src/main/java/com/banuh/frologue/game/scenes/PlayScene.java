@@ -215,7 +215,7 @@ public class PlayScene extends GameScene {
         }, game.FRAME());
         game.backgroundColor = Color.web("#6bc6ff");
 
-        frog = (Frog)game.addEntity(new OxFrog(150, 50, game));
+        frog = (Frog)game.addEntity(new WitchFrog(150, 50, game));
         frog.pid = UUID.randomUUID().toString();
         game.addEntity(new EnergyDrink(200, 40, game));
 
@@ -233,8 +233,8 @@ public class PlayScene extends GameScene {
         for (int i = 0; i < 5; i++) {
             int level = random.nextInt(1) + 1;
             TileMap map = game.tileMapList.get("level-" + level);
-            game.placeTileMapByBottom("level-" + level, (game.width - map.getWidth()) / 2f, 184 - bottomY);
-            bottomY += map.getHeight();
+            game.placeTileMapByBottom("level-" + level, (game.width - map.getWidth()) / 2f, 175 - bottomY);
+            bottomY += map.getHeight() + level * 25;
         }
 
         addEventHandler(KeyEvent.KEY_PRESSED, event -> {
