@@ -44,6 +44,7 @@ public class TestScene extends GameScene {
 
         if (overLap.isRight || overLap.isLeft || frog.pos.getX() < 0 || frog.pos.getX() > game.width - frog.getWidth()) {
             if (frog.getState("jump") && !overLap.isBottom) { // 점프하다가 벽에 닿은 경우
+                game.playSound("reflect");
                 frog.getVelocity("move_with_jump").multiplied(-1);
                 frog.isFlip = !frog.isFlip;
             } else { // 그냥 벽에 닿은 경우
@@ -66,6 +67,7 @@ public class TestScene extends GameScene {
             if (frog.getState("jump")) {
                 frog.getVelocity("move").flipY();
                 frog.getVelocity("move").multiplied(0.25);
+                game.playSound("reflect");
             }
         }
 
@@ -218,6 +220,8 @@ public class TestScene extends GameScene {
                 frog.setState("charged", false);
                 frog.setState("jump");
                 frog.jump_scale = 1;
+
+                game.playSound("jump");
             }
         });
     }

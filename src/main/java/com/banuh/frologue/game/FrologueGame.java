@@ -47,6 +47,9 @@ public class FrologueGame extends Game {
         addTileMap("first_map", "map/bottom");
         addTileMap("test", "tilemap/sample_map");
 
+        addSound("jump", "sound/effect/Jump.wav");
+        addSound("reflect", "sound/effect/reflect.mp3");
+
         for (int i = 1; i <= levelCount; i++) {
             addTileMap("level-" + i, "map/level" + i);
         }
