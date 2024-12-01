@@ -19,6 +19,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
 
 import java.io.IOException;
@@ -49,6 +50,7 @@ public abstract class Game {
   private HashMap<String, Sprite> spriteMap = new HashMap<>();
   public long runTime = 0;
   public ArrayList<Schedule> schedules = new ArrayList<>();
+  public HashMap<String, AudioClip> soundList = new HashMap<>();
 
   public Game(Canvas canvas, int width, int height, GameScene firstScene) {
     this.canvas = canvas;
@@ -185,6 +187,39 @@ public abstract class Game {
     } else {
       System.out.println("찾을 수 없는 스프라이트 이름입니다: " + spriteName);
       return null;
+    }
+  }
+
+  public AudioClip addSound(String name, String path) {
+    try {
+      AudioClip clip = new AudioClip(getClass().getResource("/" + path).toExternalForm());
+      soundList.put(name, clip);
+
+      return clip;
+    } catch (Exception e) {
+      System.err.println("Failed to load sound: " + name + " from /" + path);
+      e.printStackTrace();
+
+      return null;
+    }
+  }
+
+  public void playSound(String name) {
+    AudioClip clip = soundList.get(name);
+    if (clip != null) {
+      clip.play();
+    } else {
+      System.err.println("Sound not found: " + name);
+    }
+  }
+
+  /** 사운드 멈춤 */
+  public void stopSound(String name) {
+    AudioClip clip = soundList.get(name);
+    if (clip != null) {
+      clip.stop();
+    } else {
+      System.err.println("Sound not found: " + name);
     }
   }
 

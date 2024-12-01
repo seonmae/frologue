@@ -19,7 +19,7 @@ public class FrologueGame extends Game {
 
     @Override
     public void preload() {
-        String[] types = {"normal", "ox", "space", "umbrella", "witch"};
+        String[] types = {"normal", "ox", "space", "umbrella", "witch", "ninja"};
         for (String type: types) {
             addSprite("frog-"+type+"-death", "img/frog-"+type+"/death.png", 1, 4, 8);
             addSprite("frog-"+type+"-fall", "img/frog-"+type+"/fall.png");
@@ -44,8 +44,13 @@ public class FrologueGame extends Game {
         addSprite("frog-man-charging", "img/frog-man/charge.png", 1, 2, 4);
         addSprite("frog-man-charged", "img/frog-man/charge.png", 1, 2, 8);
 
+        addSprite("item-energy_drink", "img/items/energy-drink.png");
+
         addTileMap("first_map", "map/bottom");
         addTileMap("test", "tilemap/sample_map");
+
+        addSound("jump", "sound/effect/Jump.wav");
+        addSound("reflect", "sound/effect/reflect.mp3");
 
         for (int i = 1; i <= levelCount; i++) {
             addTileMap("level-" + i, "map/level" + i);
