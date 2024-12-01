@@ -1,5 +1,7 @@
 package com.banuh.frologue.core.sprite;
 
+import com.banuh.frologue.core.camera.GameCamera;
+import com.banuh.frologue.core.entity.Entity;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import java.time.Instant;
@@ -41,7 +43,7 @@ public class AnimationSprite extends Sprite {
         this.deltaTime = deltaTime;
     }
 
-    public void draw(GraphicsContext gc, double x, double y, double scale, boolean flip) {
+    public void draw(GraphicsContext gc, double x, double y, GameCamera camera, Entity entity, boolean flip) {
         long now = Instant.now().toEpochMilli(); // 밀리초 단위
         long gap = now - lastChange;
 
@@ -60,28 +62,26 @@ public class AnimationSprite extends Sprite {
         int sx = width * (currentFrame % col);
         int sy = height * (int)(currentFrame / col);
 
+        x = x - entity.hitbox.getPos().getX() - camera.pos.getX();
+        y = y - entity.hitbox.getPos().getY() - camera.pos.getY();
+
         if (flip) {
             gc.save();
-            gc.translate((x + width) * scale, y * scale);
+            gc.translate((x + width) * camera.scale, y * camera.scale);
             gc.scale(-1, 1);
             gc.drawImage(
                 img, sx, sy, width, height,
                 0, 0,
-                width * scale, height * scale
+                width * camera.scale, height * camera.scale
             );
             gc.restore();
         } else {
             gc.drawImage(
                 img, sx, sy, width, height,
-                x * scale, y * scale,
-                width * scale, height * scale
+                x * camera.scale, y * camera.scale,
+                width * camera.scale, height * camera.scale
             );
         }
-    }
-
-    @Override
-    public void draw(GraphicsContext gc, double x, double y, double scale) {
-        draw(gc, x, y, scale, false);
     }
 
     public void setCurrentFrame(int currentFrame) {
