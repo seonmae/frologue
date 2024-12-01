@@ -4,15 +4,15 @@ import com.banuh.frologue.core.Game;
 import javafx.scene.image.Image;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.*;
 
 public class TileMap {
     private int mapWidth;
     private int mapHeight;
     private int tileSize;
     private String name;
-    private LinkedHashMap<String, Layer> layers = new LinkedHashMap<>();
+    private LinkedHashMap<String, Layer> hashMapLayers = new LinkedHashMap<>();
+    private List<Layer> layers;
     private Image tileSet;
     private int tilesetCols;
     private Game game;
@@ -32,7 +32,7 @@ public class TileMap {
 
         for (TileMapData.Layer originLayer: tileMapOriginData.getLayers()) {
             Layer layer = new Layer(originLayer.name, mapWidth, mapHeight, originLayer.collider);
-            layers.put(originLayer.name, layer);
+            hashMapLayers.put(originLayer.name, layer);
 
             for (TileMapData.Tile originTile: originLayer.tiles) {
                 int x = originTile.x;
@@ -40,13 +40,16 @@ public class TileMap {
                 layer.tiles[y][x] = new Tile(originTile.id, x, y);
             }
         }
+
+        this.layers = new ArrayList<>(hashMapLayers.values());
+        Collections.reverse(layers);
     }
 
     public void draw(double x, double y) {
         x -= game.camera.pos.getX();
         y -= game.camera.pos.getY();
 
-        for (Layer layer: layers.values()) {
+        for (Layer layer: layers) {
             for (int yi = 0; yi < mapHeight; yi++) {
                 for (int xi = 0; xi < mapWidth; xi++) {
                     Tile tile = layer.tiles[yi][xi];
@@ -69,8 +72,7 @@ public class TileMap {
     }
 
     public void printMap() {
-        for (int i = 0; i < layers.size(); i++) {
-            Layer layer = layers.get(i);
+        for (Layer layer: layers) {
             System.out.println("layer: " + layer.name);
 
             for (int j = 0; j < layer.tiles.length; j++) {
@@ -108,12 +110,12 @@ public class TileMap {
         return mapWidth;
     }
 
-    public LinkedHashMap<String, Layer> getLayers() {
-        return layers;
+    public LinkedHashMap<String, Layer> getHashMapLayers() {
+        return hashMapLayers;
     }
 
     public Layer getLayer(String name) {
-        return layers.get(name);
+        return hashMapLayers.get(name);
     }
 
     public int getTilesetCols() {

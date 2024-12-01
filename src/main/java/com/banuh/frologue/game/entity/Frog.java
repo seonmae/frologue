@@ -14,12 +14,12 @@ public abstract class Frog extends Entity {
 
     public Frog(String type, double x, double y, Game game) {
         super(game.getSprite("frog-"+type+"-idle"),
-            x, y, game, new Hitbox(22, 28, 20, 12)
+            x, y, game, new Hitbox(24, 28, 16, 12)
         );
 
         this.type = type;
 
-        addState("move", "frog-"+type+"-land");
+        addState("move", "frog-"+type+"-move");
         addState("jump", "frog-"+type+"-jump");
         addState("up", "frog-"+type+"-jump");
         addState("fall", "frog-"+type+"-fall");

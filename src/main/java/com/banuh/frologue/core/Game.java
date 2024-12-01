@@ -120,17 +120,22 @@ public abstract class Game {
     gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 //    gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
+    for (PlacedTileMap tileMap: currentScene.placedTilemapList) {
+      tileMap.draw();
+    }
+
     for (Entity entity: currentScene.entityList) {
       entity.draw(gc, camera);
       if (showHitbox) {
         gc.setStroke(Color.RED);
         gc.setLineWidth(1);
-        gc.strokeRect(entity.pos.getX() * camera.scale, entity.pos.getY() * camera.scale, entity.getWidth() * camera.scale, entity.getHeight() * camera.scale);
+        gc.strokeRect(
+                (entity.pos.getX() - camera.pos.getX()) * camera.scale,
+                (entity.pos.getY() - camera.pos.getY()) * camera.scale,
+                entity.getWidth() * camera.scale,
+                entity.getHeight() * camera.scale
+        );
       }
-    }
-
-    for (PlacedTileMap tileMap: currentScene.placedTilemapList) {
-      tileMap.draw();
     }
   }
 
