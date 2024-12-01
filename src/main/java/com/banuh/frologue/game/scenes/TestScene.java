@@ -183,7 +183,7 @@ public class TestScene extends GameScene {
 //        game.showHitbox = true;
         game.backgroundColor = Color.web("#6bc6ff");
 
-        frog = (Frog)game.addEntity(new UmbrellaFrog(150, 0, game));
+        frog = (Frog)game.addEntity(new NinjaFrog(150, 0, game));
         TileMap firstMap = game.tileMapList.get("first_map");
         game.placeTileMapByBottom("first_map", (game.width - firstMap.getWidth()) / 2f, 200);
 

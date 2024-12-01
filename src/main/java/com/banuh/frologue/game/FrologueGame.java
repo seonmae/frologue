@@ -19,7 +19,7 @@ public class FrologueGame extends Game {
 
     @Override
     public void preload() {
-        String[] types = {"normal", "ox", "space", "umbrella", "witch"};
+        String[] types = {"normal", "ox", "space", "umbrella", "witch", "ninja"};
         for (String type: types) {
             addSprite("frog-"+type+"-death", "img/frog-"+type+"/death.png", 1, 4, 8);
             addSprite("frog-"+type+"-fall", "img/frog-"+type+"/fall.png");
