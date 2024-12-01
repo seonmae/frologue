@@ -44,17 +44,17 @@ public class PlacedTileMap {
             int tileSize = tileMap.getTileSize();
 
             // 엔티티가 타일맵 기준 어디에 속해있는지 확인
-            int areaX1 = (int)entityX / tileSize;
-            int areaY1 = (int)entityY / tileSize;
+            int areaX1 = (int)(entityX + 1) / tileSize;
+            int areaY1 = (int)(entityY + 1) / tileSize;
 
-            int areaX2 = (int)(entityX + width) / tileSize + 1;
-            int areaY2 = (int)(entityY + height) / tileSize + 1;
+            int areaX2 = (int)(entityX + width - 1) / tileSize + 1;
+            int areaY2 = (int)(entityY + height - 1) / tileSize + 1;
 
             OverLap overLap = new OverLap(false);
 
             for (int i = areaY1; i < areaY2; i++) {
                 for (int j = areaX1; j < areaX2; j++) {
-                    if (i >= 0 && j >= 0 && layer.tiles[i][j] != null) {
+                    if (i < tileMap.getMapHeight() && j < tileMap.getMapWidth() && i >= 0 && j >= 0 && layer.tiles[i][j] != null) {
                         Vector2D tilePos = new Vector2D(j * tileSize, i * tileSize).added(pos);
 
                         double overlapX1 = Math.max(target.getX(), tilePos.getX());

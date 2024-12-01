@@ -4,14 +4,13 @@ import com.banuh.frologue.core.Game;
 import com.banuh.frologue.core.scene.GameScene;
 import com.banuh.frologue.core.tilemap.OverLap;
 import com.banuh.frologue.core.tilemap.TileMap;
-import com.banuh.frologue.core.utils.Direction;
-import com.banuh.frologue.core.utils.Vector2D;
-import com.banuh.frologue.game.entity.*;
+import com.banuh.frologue.game.frog.*;
+import com.banuh.frologue.game.item.EnergyDrink;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 
-import java.util.Objects;
+import java.util.Random;
 
 public class TestScene extends GameScene {
     public double GRAVITY = 9.8;
@@ -25,8 +24,15 @@ public class TestScene extends GameScene {
 
     @Override
     public void update() {
+        System.out.println("JUMP: " + frog.getState("jump"));
+        System.out.println("MOVE: " + frog.getState("move"));
+        System.out.println("FALL: " + frog.getState("fall"));
+        System.out.println();
+
         frog.setVelocityX("wall", 0);
         OverLap overLap = isCollision(frog.getNextPos(), frog.getWidth(), frog.getHeight());
+        game.camera.pos.setY(frog.pos.getY() - game.height/2f - 25);
+//        game.camera.pos.set(0, 0);
 
         this.overLap = overLap;
 
@@ -38,8 +44,13 @@ public class TestScene extends GameScene {
 //            System.out.println();
 //        }
 
-        if (overLap.isRight || overLap.isLeft) {
-            if (frog.getState("jump")) { // 점프하다가 벽에 닿은 경우
+        if (overLap.isRight || overLap.isLeft || frog.pos.getX() < 0 || frog.pos.getX() > game.width - frog.getWidth()) {
+            if (frog.getState("jump") && !overLap.isBottom) { // 점프하다가 벽에 닿은 경우
+                if (frog instanceof NinjaFrog) {
+                    frog.getVelocity("move").addedY(-150);
+                }
+
+                game.playSound("reflect");
                 frog.getVelocity("move_with_jump").multiplied(-1);
                 frog.isFlip = !frog.isFlip;
             } else { // 그냥 벽에 닿은 경우
@@ -48,14 +59,21 @@ public class TestScene extends GameScene {
                 } else if (overLap.isRight) {
                     frog.pos.setX(overLap.rightTilePos.getX() - frog.getWidth());
                 }
+
+                if (frog.pos.getX() >= game.width - frog.getWidth()) {
+                    frog.pos.setX(game.width - frog.getWidth());
+                } else if (frog.pos.getX() <= 0) {
+                    frog.pos.setX(0);
+                }
             }
         }
 
-        if (overLap.isTop) {
+        if (overLap.isTop && !overLap.isBottom) {
             // 점프하다가 천장에 닿은 경우
             if (frog.getState("jump")) {
                 frog.getVelocity("move").flipY();
                 frog.getVelocity("move").multiplied(0.25);
+                game.playSound("reflect");
             }
         }
 
@@ -73,7 +91,7 @@ public class TestScene extends GameScene {
                 }, game.FRAME() * 4);
             }
 
-            frog.pos.setY(overLap.bottomTilePos.getY() - frog.getHeight());
+            frog.pos.setY(overLap.bottomTilePos.getY() - frog.getHeight() + 1);
             frog.setVelocityY("move", 0);
             frog.setVelocityY("gravity", 0);
         } else {
@@ -115,10 +133,10 @@ public class TestScene extends GameScene {
         }
 
         if (game.isPressed.spaceKey) {
-            if (frog.jump_scale < 2.5) {
-                frog.jump_scale += 1.25f / game.getFps();
+            if (frog.jump_scale < 3) {
+                frog.jump_scale += 1.5f / game.getFps();
             } else {
-                frog.jump_scale = 2.5;
+                frog.jump_scale = 3;
             }
         }
 
@@ -128,26 +146,34 @@ public class TestScene extends GameScene {
 
         frog.setState("up", totalVelocityY < 0);
         frog.setState("fall", totalVelocityY > 0);
+
+        if (frog instanceof UmbrellaFrog) {
+            if (frog.getState("fall")) {
+                GRAVITY = 9.8 / 8;
+            } else {
+                GRAVITY = 9.8;
+            }
+        }
     }
 
     @Override
     public void render() {
-//        if (overLap.isTop) {
-//            game.gc.setFill(new Color(1f, 0f, 0f, 0.5f));
-//            game.gc.fillRect(overLap.topTilePos.getX() * game.camera.scale, overLap.topTilePos.getY() * game.camera.scale, 48, 48);
-//        }
-//        if (overLap.isRight) {
-//            game.gc.setFill(new Color(0f, 1f, 0f, 0.5f));
-//            game.gc.fillRect(overLap.rightTilePos.getX() * game.camera.scale, overLap.rightTilePos.getY() * game.camera.scale, 48, 48);
-//        }
-//        if (overLap.isBottom) {
-//            game.gc.setFill(new Color(0f, 0f, 1f, 0.5f));
-//            game.gc.fillRect(overLap.bottomTilePos.getX() * game.camera.scale, overLap.bottomTilePos.getY() * game.camera.scale, 48, 48);
-//        }
-//        if (overLap.isLeft) {
-//            game.gc.setFill(new Color(0f, 0f, 0f, 0.5f));
-//            game.gc.fillRect(overLap.leftTilePos.getX() * game.camera.scale, overLap.leftTilePos.getY() * game.camera.scale, 48, 48);
-//        }
+        if (overLap.isTop) {
+            game.gc.setFill(new Color(1f, 0f, 0f, 0.5f));
+            game.gc.fillRect((overLap.topTilePos.getX() - game.camera.pos.getX()) * game.camera.scale, (overLap.topTilePos.getY() - game.camera.pos.getY()) * game.camera.scale, 48, 48);
+        }
+        if (overLap.isRight) {
+            game.gc.setFill(new Color(0f, 1f, 0f, 0.5f));
+            game.gc.fillRect((overLap.rightTilePos.getX() - game.camera.pos.getX()) * game.camera.scale, (overLap.rightTilePos.getY() - game.camera.pos.getY()) * game.camera.scale, 48, 48);
+        }
+        if (overLap.isBottom) {
+            game.gc.setFill(new Color(0f, 0f, 1f, 0.5f));
+            game.gc.fillRect((overLap.bottomTilePos.getX() - game.camera.pos.getX()) * game.camera.scale, (overLap.bottomTilePos.getY() - game.camera.pos.getY()) * game.camera.scale, 48, 48);
+        }
+        if (overLap.isLeft) {
+            game.gc.setFill(new Color(0f, 0f, 0f, 0.5f));
+            game.gc.fillRect((overLap.leftTilePos.getX() - game.camera.pos.getX()) * game.camera.scale, (overLap.leftTilePos.getY() - game.camera.pos.getY()) * game.camera.scale, 48, 48);
+        }
 
 //        if (tilepos != null) {
 //            // show hitboxes
@@ -173,9 +199,26 @@ public class TestScene extends GameScene {
 //        game.showHitbox = true;
         game.backgroundColor = Color.web("#6bc6ff");
 
-        frog = (Frog)game.addEntity(new OxFrog(180, 0, game));
-        TileMap tileMap = game.tileMapList.get("test");
-        game.placeTileMapByBottom("test", - (tileMap.getWidth() - game.width) / 2f, 200 + 32);
+        frog = (Frog)game.addEntity(new NormalFrog(150, 50, game));
+        game.addEntity(new EnergyDrink(200, 40, game));
+
+        TileMap firstMap = game.tileMapList.get("first_map");
+        game.placeTileMapByBottom("first_map", (game.width - firstMap.getWidth()) / 2f, 200);
+
+        if (frog instanceof SpaceFrog) {
+            GRAVITY = 1.63;
+        }
+
+        // 총 5개의 랜덤 맵을 가져옴
+        Random random = new Random();
+        int bottomY = firstMap.getHeight();
+
+        for (int i = 0; i < 5; i++) {
+            int level = random.nextInt(1) + 1;
+            TileMap map = game.tileMapList.get("level-" + level);
+            game.placeTileMapByBottom("level-" + level, (game.width - map.getWidth()) / 2f, 184 - bottomY);
+            bottomY += map.getHeight();
+        }
 
         addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             KeyCode key = event.getCode();
@@ -190,13 +233,26 @@ public class TestScene extends GameScene {
             KeyCode key = event.getCode();
 
             if (key == KeyCode.SPACE && !frog.getState("jump")) {
-                frog.setVelocityY("move", -frog.JUMP_STRENGTH * frog.jump_scale);
-                frog.setVelocityX("move_with_jump", 100 * (frog.isFlip ? 1 : -1));
+                double jump_meter = 0;
+                double jump_high = 0;
+
+//                if (frog instanceof NinjaFrog) {
+//                    jump_meter = frog.JUMP_METER / (frog.jump_scale * 4) - 50;
+//                    jump_high = frog.JUMP_STRENGTH + frog.jump_scale * 100;
+//                } else {
+//                }
+                jump_meter = frog.JUMP_METER;
+                jump_high = frog.JUMP_STRENGTH * frog.jump_scale;
+
+                frog.setVelocityY("move", -jump_high);
+                frog.setVelocityX("move_with_jump", jump_meter * (frog.isFlip ? 1 : -1));
                 /*frog.SPEED *= 3;*/
                 frog.setState("charging", false);
                 frog.setState("charged", false);
                 frog.setState("jump");
                 frog.jump_scale = 1;
+
+                game.playSound("jump");
             }
         });
     }
